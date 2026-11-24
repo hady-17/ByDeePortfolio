@@ -29,13 +29,13 @@ Every image first tries a local file in `assets/`. Use the exact name below with
 
 | File | Used for |
 | --- | --- |
-| `assets/hero` | Hero image |
-| `assets/Dee` | Deena's profile photo |
-| `assets/facial` | Signature Facial card |
+| `assets/home-hero` | Hero image |
+| `assets/deena-profile` | Deena's profile photo |
+| `assets/signature-facial` | Signature Facial card |
 | `assets/skin-rejuvenation` | Skin Rejuvenation card |
 | `assets/laser-resurfacing` | Laser Resurfacing card |
-| `assets/Quadro Laser` | Quadro Laser card |
-| `assets/Anti-Wrinkle` | Anti-Wrinkle card |
+| `assets/quadro-laser` | Quadro Laser card |
+| `assets/anti-wrinkle` | Anti-Wrinkle card |
 | `assets/results-1`, `assets/results-2` | Before / after cases |
 
 ## Deployment (GitHub Actions)
@@ -51,7 +51,7 @@ One-time setup: in the GitHub repo go to **Settings → Pages → Source** and c
 
 - **WhatsApp number:** `CONFIG.whatsappNumber` in `js/main.js` (digits only, international format) and the `https://wa.me/...` links in `index.html`. Currently `96181126500`.
 - **Booking form:** `CONFIG.formMode` — `'whatsapp'` opens WhatsApp with the request details; `'netlify'` posts to Netlify Forms and falls back to WhatsApp.
-- **Profile photo:** `assets/Dee` (About section).
+- **Profile photo:** `assets/deena-profile` (About section).
 - **Contact details, hours, map:** Contact section in `index.html`; the map URL is the `data-src` on `.map`.
 
 ## Translations

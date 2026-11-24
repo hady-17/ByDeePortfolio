@@ -1,0 +1,17 @@
+---
+// Uses a local photo from src/assets/<name>.(jpg|jpeg|png|webp|avif) when present
+// (optimised at build time), otherwise falls back to the stock photo URL.
+import { Image } from 'astro:assets';
+
+const { local, fallback, fallbackSrcset, sizes, width, height, alt = '', class: cls, loading, ...rest } = Astro.props;
+const mods = import.meta.glob('/src/assets/*.{jpg,jpeg,png,webp,avif}', { eager: true }) as Record<string, { default: ImageMetadata }>;
+const key = Object.keys(mods).find((k) => k.toLowerCase().replace(/\.[^.]+$/, '') === `/src/assets/${local}`);
+const img = key ? mods[key].default : null;
+const w = Number(width);
+const eager = loading ?? (rest.fetchpriority === 'high' ? 'eager' : 'lazy');
+---
+{img ? (
+  <Image src={img} width={w} height={Number(height)} widths={[Math.round(w / 2), w]} sizes={sizes ?? `${w}px`} alt={alt} class={cls} loading={eager} {...rest} />
+) : (
+  <img src={fallback} srcset={fallbackSrcset} sizes={sizes} width={width} height={height} alt={alt} class={cls} loading={eager} {...rest} />
+)}

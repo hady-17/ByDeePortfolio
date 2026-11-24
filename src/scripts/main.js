@@ -1,8 +1,12 @@
 /* ==========================================================================
    ByDee — main.js (vanilla, no dependencies)
-   Modules: config · utils · i18n · theme · header/nav · reveal · hero ·
+   Modules: config · utils · theme · header/nav · reveal · hero ·
             counters · before/after · carousel · booking · map · mobile bar
    ========================================================================== */
+import en from '../i18n/en.json';
+import ar from '../i18n/ar.json';
+import { initAnalytics } from './analytics.js';
+
 (() => {
   'use strict';
 
@@ -30,213 +34,17 @@
 
   /* ======================================================================
      I18N — English is read from the HTML at load; Arabic lives here.
-     Add a key: put data-i18n="key" on the element + an entry in STR.ar.
+     Page text is rendered at build time (src/i18n/en.json, ar.json). These
+     dictionaries are only used here for messages created in the browser.
      ====================================================================== */
-  const STR = {
-    en: {
-      // dynamic strings (not present in the HTML)
-      'meta.desc': '',
-      'a11y.lang': 'التبديل إلى العربية',
-      'a11y.themeDark': 'Switch to dark mode',
-      'a11y.themeLight': 'Switch to light mode',
-      'a11y.menuOpen': 'Open menu',
-      'a11y.menuClose': 'Close menu',
-      'reviews.slide': 'Testimonial {n} of {total}',
-      'reviews.goto': 'Show testimonial {n}',
-      'map.title': 'Map showing ByDee in Beirut',
-      'err.name': 'Please enter your name.',
-      'err.phone': 'Please enter a valid phone number.',
-      'err.treatment': 'Please choose a treatment.',
-      'err.date': 'Please choose a date from today onward.',
-      'form.sent': 'Thank you. We have received your request and will call you shortly to confirm.',
-      'form.wa': 'Opening WhatsApp with your request. Just press send.',
-      'form.waLink': 'If WhatsApp did not open, tap here.',
-      'wa.default': 'Hello ByDee, I would like to book a consultation.',
-      'wa.form': 'Hello ByDee, I would like to book an appointment.\nName: {name}\nPhone: {phone}\nTreatment: {treatment}\nPreferred date: {date}{message}',
-      'wa.msg': '\nMessage: '
-    },
-    ar: {
-      'meta.title': 'ByDee | عيادة تجميل وعناية بالبشرة في بيروت',
-      'meta.desc': 'فيشل، تجديد البشرة، ليزر وإزالة الشعر بالليزر على يد مختصة معتمدة في ByDee في بيروت. احجز استشارتك عبر الموقع أو واتساب.',
-      'a11y.skip': 'انتقل إلى المحتوى',
-      'a11y.lang': 'Switch to English',
-      'a11y.themeDark': 'التبديل إلى الوضع الداكن',
-      'a11y.themeLight': 'التبديل إلى الوضع الفاتح',
-      'a11y.menuOpen': 'فتح القائمة',
-      'a11y.menuClose': 'إغلاق القائمة',
-      'logo.sub': 'عيادة تجميل',
-      'nav.about': 'العيادة',
-      'nav.treatments': 'العلاجات',
-      'nav.results': 'النتائج',
-      'nav.reviews': 'الآراء',
-      'nav.contact': 'تواصل',
-      'theme.label': 'المظهر',
-      'cta.book': 'احجز موعداً',
-      'cta.bookConsult': 'حجز استشارة',
-      'cta.whatsapp': 'تواصل عبر واتساب',
-      'hero.eyebrow': 'التجميل',
-      'hero.l1': 'جمالٌ طبيعي،',
-      'hero.l2': 'بعناية',
-      'hero.l3': 'راقية.',
-      'hero.lead': 'علاجات احترافية مصمّمة حول بشرتك وملامحك وإيقاعك. نتائج تشبهك، لكن أكثر إشراقاً وراحة.',
-      'hero.t1': 'مختصة معتمدة',
-      'hero.t2': 'أجهزة معتمدة',
-      'hero.t3': 'منتجات مرخّصة',
-      'hero.since': 'منذ',
-      'hero.scroll': 'مرّر',
-      'img.hero': 'غرفة علاج هادئة وعميلة تتلقى جلسة فيشل',
-      'img.doctor': 'صورة ديينا قدّورة، ممرضة مجازة',
-      'about.eyebrow': 'العيادة',
-      'about.title': 'الاحترافية أولاً، والجمال دائماً.',
-      'about.p1': 'تأسست ByDee على قناعة بسيطة: أجمل عمل تجميلي هو الذي لا يُلاحَظ. يرى الناس فقط أنك تبدو بأفضل حال.',
-      'about.p2': 'تبدأ كل خطة باستشارة متأنية وتقييم للبشرة. نستخدم فقط منتجات معتمدة وأجهزة مرخّصة، ونصارحك دائماً حين يكون القليل أفضل.',
-      'about.role': 'ممرضة مجازة · مختصة معتمدة في العناية بالبشرة',
-      'about.c1': 'مختصة معتمدة في تجميل البشرة',
-      'about.c2': 'عضو في نقابة التمريض',
-      'about.c3': 'أكثر من 3 سنوات خبرة في التجميل',
-      'about.quote': '«مهمتي أن أحافظ على ما يجعل وجهك يشبهك.»',
-      'treat.eyebrow': 'العلاجات',
-      'treat.title': 'علاجات مدروسة، مصمّمة لك.',
-      'treat.lead': 'يبدأ كل علاج باستشارة، لتناسب الخطة بشرتك وأهدافك ووقتك.',
-      'treat.book': 'احجز',
-      't1.title': 'الفيشل المميّز',
-      't1.text': 'تنظيف عميق وتنقية لطيفة وترطيب مخصّص لنوع بشرتك.',
-      't1.time': '60 دقيقة',
-      't2.title': 'تجديد البشرة',
-      't2.text': 'الإبر الدقيقة ومعززات البشرة لاستعادة النعومة والإشراق والشدّ.',
-      't2.time': '45 دقيقة',
-      't3.title': 'التقشير بالليزر',
-      't3.text': 'ليزر جزئي لتصغير المسام وتخفيف الندبات وتوحيد لون البشرة.',
-      't3.time': '45 دقيقة',
-      't5.title': 'ليزر كوادرو',
-      't5.text': 'إزالة الشعر بليزر كوادرو، مريح ومناسب لمعظم ألوان البشرة.',
-      't5.time': '15–60 دقيقة',
-      't6.title': 'علاج التجاعيد',
-      't6.text': 'يخفّف خطوط التعبير مع الحفاظ على حيوية ملامحك.',
-      't6.time': '20 دقيقة',
-      'results.eyebrow': 'النتائج',
-      'results.title': 'تغيير حقيقي، بلطف.',
-      'results.lead': 'اسحب المؤشر، أو استخدم مفاتيح الأسهم، للمقارنة.',
-      'results.before': 'قبل',
-      'results.after': 'بعد',
-      'results.slider': 'مقارنة قبل وبعد',
-      'results.afterAlt': 'بعد العلاج',
-      'results.c1': 'تجديد البشرة · 3 جلسات',
-      'results.c2': 'التقشير بالليزر · جلستان',
-      'results.note': 'صور توضيحية. النتائج تختلف من شخص لآخر. جميع الصور منشورة بموافقة المرضى.',
-      'why.eyebrow': 'لماذا نحن',
-      'why.title': 'ثقة تُقاس.',
-      'why.s1': 'سنوات من الخبرة',
-      'why.s2': 'عميل تحت رعايتنا',
-      'why.s3': 'علاج منجز',
-      'why.s4': 'ينصحون بنا',
-      'why.r1t': 'عناية معتمدة دائماً',
-      'why.r1': 'كل علاج تجريه ممرضة مجازة ومختصة معتمدة في التجميل.',
-      'why.r2t': 'منتجات معتمدة فقط',
-      'why.r2': 'منتجات أصلية يمكن تتبّع مصدرها وأجهزة معتمدة.',
-      'why.r3t': 'نصيحة صادقة',
-      'why.r3': 'ننصح بالأقل حين يكون أفضل، ونقول لا حين لا يناسبك العلاج.',
-      'reviews.eyebrow': 'آراء العملاء',
-      'reviews.title': 'بكلماتهم.',
-      'reviews.label': 'آراء العملاء',
-      'reviews.prev': 'الرأي السابق',
-      'reviews.next': 'الرأي التالي',
-      'reviews.slide': 'رأي {n} من {total}',
-      'reviews.goto': 'عرض الرأي {n}',
-      'reviews.q1': 'كنت قلقة من أن تبدو النتيجة مصطنعة. بدلاً من ذلك، يقول الجميع إنني أبدو مرتاحة. الاستشارة وحدها كانت تستحق.',
-      'reviews.q2': 'هدوء ونظافة وصدق حقيقي. أقنعوني بالتخلي عن علاج لم أكن بحاجة إليه.',
-      'reviews.q3': 'بعد ست جلسات ليزر توقفت عن التفكير بالأمر. مريح وسريع، والمواعيد دائماً دقيقة.',
-      'reviews.note': 'آراء نموذجية. استبدلها بآراء عملاء حقيقية قبل النشر.',
-      'booking.eyebrow': 'الحجز',
-      'booking.title': 'زيارتك الأولى تبدأ بحديث.',
-      'booking.lead': 'أرسل طلبك وسنؤكد الموعد هاتفياً خلال ساعات العمل. تفضّل الدردشة؟ راسلنا على واتساب وسنرد بسرعة.',
-      'booking.f1': 'نرد خلال ساعتي عمل',
-      'booking.f2': 'تغيير الموعد مجاناً حتى 24 ساعة قبله',
-      'form.name': 'الاسم الكامل',
-      'form.phone': 'رقم الهاتف',
-      'form.treatment': 'العلاج',
-      'form.choose': 'اختر العلاج',
-      'form.consult': 'استشارة',
-      'form.unsure': 'لست متأكداً بعد',
-      'form.date': 'التاريخ المفضّل',
-      'form.message': 'رسالة',
-      'form.optional': '(اختياري)',
-      'form.submit': 'طلب موعد',
-      'form.privacy': 'نستخدم بياناتك فقط لتنظيم موعدك.',
-      'form.sent': 'شكراً لك. استلمنا طلبك وسنتصل بك قريباً لتأكيد الموعد.',
-      'form.wa': 'جارٍ فتح واتساب مع تفاصيل طلبك. فقط اضغط إرسال.',
-      'form.waLink': 'إذا لم يُفتح واتساب، اضغط هنا.',
-      'err.name': 'يرجى إدخال الاسم.',
-      'err.phone': 'يرجى إدخال رقم هاتف صحيح.',
-      'err.treatment': 'يرجى اختيار العلاج.',
-      'err.date': 'يرجى اختيار تاريخ من اليوم فصاعداً.',
-      'contact.eyebrow': 'زورونا',
-      'contact.title': 'تجدوننا في',
-      'contact.address': 'العنوان',
-      'contact.phone': 'الهاتف',
-      'contact.hours': 'ساعات العمل',
-      'contact.h1': 'الاثنين – الجمعة',
-      'contact.h2': 'السبت',
-      'contact.h3': 'الأحد',
-      'contact.closed': 'مغلق',
-      'map.load': 'عرض الخريطة',
-      'map.title': 'خريطة موقع ByDee في بيروت',
-      'footer.rights': 'جميع الحقوق محفوظة.',
-      'wa.default': 'مرحباً ByDee، أودّ حجز استشارة.',
-      'wa.form': 'مرحباً ByDee، أودّ حجز موعد.\nالاسم: {name}\nالهاتف: {phone}\nالعلاج: {treatment}\nالتاريخ المفضّل: {date}{message}',
-      'wa.msg': '\nرسالة: '
-    }
-  };
+  const STR = { en, ar }; // dictionaries shared with the pages (src/i18n)
+
 
   const t = (key, vars) => {
     let s = STR[lang()][key] ?? STR.en[key] ?? '';
     if (vars) Object.keys(vars).forEach((k) => { s = s.replaceAll(`{${k}}`, vars[k]); });
     return s;
   };
-
-  // Capture English defaults from the markup (single source of truth for EN)
-  function captureEnglish() {
-    $$('[data-i18n]').forEach((el) => { STR.en[el.dataset.i18n] ??= el.textContent; });
-    $$('[data-i18n-attr]').forEach((el) => {
-      el.dataset.i18nAttr.split(';').forEach((pair) => {
-        const [attr, key] = pair.split(':');
-        STR.en[key] ??= el.getAttribute(attr);
-      });
-    });
-    STR.en['meta.title'] = document.title;
-    STR.en['meta.desc'] = $('meta[name="description"]').content;
-  }
-
-  function applyLang(next, persist) {
-    root.lang = next;
-    root.dir = next === 'ar' ? 'rtl' : 'ltr';
-    $$('[data-i18n]').forEach((el) => { const v = t(el.dataset.i18n); if (v) el.textContent = v; });
-    $$('[data-i18n-attr]').forEach((el) => {
-      el.dataset.i18nAttr.split(';').forEach((pair) => {
-        const [attr, key] = pair.split(':');
-        const v = t(key); if (v) el.setAttribute(attr, v);
-      });
-    });
-    document.title = t('meta.title');
-    $('meta[name="description"]').content = t('meta.desc');
-    $('meta[property="og:locale"]').content = next === 'ar' ? 'ar_LB' : 'en_US';
-
-    // Toggle buttons show the OTHER language
-    $$('.js-lang-toggle').forEach((btn) => {
-      const label = $('.js-lang-label', btn);
-      label.textContent = next === 'ar' ? 'EN' : 'عربي';
-      label.lang = next === 'ar' ? 'en' : 'ar';
-      btn.setAttribute('aria-label', t('a11y.lang'));
-    });
-    if (persist) store.set('lang', next);
-    document.dispatchEvent(new CustomEvent('langchange'));
-  }
-
-  function initI18n() {
-    captureEnglish();
-    applyLang(lang(), false);
-    $$('.js-lang-toggle').forEach((btn) => btn.addEventListener('click', () => applyLang(lang() === 'ar' ? 'en' : 'ar', true)));
-  }
 
   /* ======================================================================
      THEME — prefers-color-scheme by default, manual choice remembered
@@ -582,6 +390,7 @@
       const invalid = fields.filter((f) => !check(f));
       if (invalid.length) { invalid[0].focus(); return; }
       if (form.elements.company.value) return; // honeypot = bot
+      document.dispatchEvent(new CustomEvent('bydee:booking'));
 
       if (CONFIG.formMode === 'netlify') {
         try {
@@ -650,40 +459,19 @@
      extension) trying several extensions; if none exists, fall back to the
      stock photo kept in data-fallback.
      ====================================================================== */
-  function initImageFallbacks() {
-    const EXTS = ['webp', 'jpg', 'jpeg', 'jfif', 'png', 'avif'];
-    $$('img[data-local]').forEach((img) => {
-      let i = 0;
-      const useFallback = () => {
-        img.removeEventListener('error', next);
-        img.removeAttribute('srcset');
-        if (img.dataset.fallbackSrcset) img.srcset = img.dataset.fallbackSrcset;
-        if (img.dataset.fallback) img.src = img.dataset.fallback;
-        img.addEventListener('error', () => img.classList.add('is-broken'), { once: true });
-      };
-      const next = () => {
-        if (i < EXTS.length) img.src = `${img.dataset.local}.${EXTS[i++]}`;
-        else useFallback();
-      };
-      img.addEventListener('error', next);
-      next();
-    });
-  }
-
-  initImageFallbacks();
-  initI18n();
-  initTheme();
-  const onScrollHeader = initHeaderNav();
-  const onScrollHero = initHero();
-  initReveal();
-  initCounters();
-  initBeforeAfter();
-  initCarousel();
-  initWhatsAppLinks();
-  initBooking();
-  initMap();
-  initMobileBar();
-  initMisc();
+  const safe = (fn, fallback) => { try { return fn(); } catch (err) { console.error(err); return fallback; } };
+  safe(initTheme);
+  const onScrollHeader = safe(initHeaderNav, () => {});
+  const onScrollHero = safe(initHero, () => {});
+  safe(initReveal);
+  safe(initCounters);
+  safe(initBeforeAfter);
+  safe(initCarousel);
+  safe(initWhatsAppLinks);
+  safe(initBooking);
+  safe(initMap);
+  safe(initMobileBar);
+  safe(initMisc);
 
   // One rAF-throttled scroll handler for everything scroll-driven
   let ticking = false;
@@ -694,4 +482,5 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+  safe(initAnalytics);
 })();

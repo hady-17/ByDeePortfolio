@@ -1,0 +1,68 @@
+---
+import Base from './Base.astro';
+import site from '../../site.config.mjs';
+import { makeT, otherLang, localePath, type Lang } from '../i18n';
+import { legalExtra, type LegalDoc } from '../i18n/legal';
+
+const { lang, doc } = Astro.props as { lang: Lang; doc: LegalDoc };
+const t = makeT(lang);
+const x = legalExtra[lang];
+const path = `/${doc.slug}/`;
+const date = new Intl.DateTimeFormat(lang === 'ar' ? 'ar-LB' : 'en-GB', { dateStyle: 'long' }).format(new Date(site.lastUpdated));
+const analyticsOn = Boolean(site.analytics.ga4Id || site.analytics.metaPixelId);
+---
+<Base lang={lang} path={path} title={`${doc.title} | ByDee`} description={doc.lead}>
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  </svg>
+  <header class="header is-solid legal-header">
+    <div class="container header__bar">
+      <a class="logo" href={localePath(lang, '/')} aria-label="ByDee">
+        <span class="logo__mark" aria-hidden="true">D</span>
+        <span class="logo__text">ByDee<small>{t('logo.sub')}</small></span>
+      </a>
+      <div class="header__tools">
+        <a class="icon-btn" href={localePath(otherLang(lang), path)} hreflang={otherLang(lang)} lang={otherLang(lang)} aria-label={t('a11y.lang')}>{t('lang.other')}</a>
+        <button class="icon-btn js-theme-toggle" type="button" aria-pressed="false">
+          <svg class="icon icon--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="icon icon--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="legal container">
+    <p class="eyebrow">{x.updated}: <time datetime={site.lastUpdated}>{date}</time></p>
+    <h1 class="h2">{doc.title}</h1>
+    <p class="section__lead">{doc.lead}</p>
+    {doc.sections.map((s) => (
+      <section>
+        <h2 class="legal__h">{s.h}</h2>
+        {s.p.map((para) => <p>{para}</p>)}
+        {s.ul && <ul>{s.ul.map((li) => <li>{li}</li>)}</ul>}
+      </section>
+    ))}
+    <section>
+      <h2 class="legal__h">{x.contact}</h2>
+      <p>
+        <a href={`tel:${site.phone}`} dir="ltr">{site.phoneDisplay}</a> ·
+        <a href={`https://wa.me/${site.whatsapp}`} rel="noopener"> WhatsApp</a>
+        {site.email && <> · <a href={`mailto:${site.email}`}>{site.email}</a></>}
+      </p>
+    </section>
+    <p><a class="link-arrow" href={localePath(lang, '/')}>{x.back}</a></p>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <ul class="footer__legal-nav" role="list">
+        <li><a href={localePath(lang, '/privacy/')}>{t('legal.privacy')}</a></li>
+        <li><a href={localePath(lang, '/terms/')}>{t('legal.terms')}</a></li>
+        <li><a href={localePath(lang, '/medical-disclaimer/')}>{t('legal.disclaimer')}</a></li>
+        {analyticsOn && <li><button class="js-cookie-settings footer__cookie" type="button">{t('cookie.settings')}</button></li>}
+      </ul>
+      <p class="footer__legal">© {new Date().getFullYear()} ByDee. {t('footer.rights')}</p>
+    </div>
+  </footer>
+</Base>

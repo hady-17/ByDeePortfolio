@@ -1,72 +1,45 @@
 # ByDee — Aesthetics & Skin Clinic Website
 
-Static, bilingual (English / Arabic, RTL) website for ByDee, a clinic in Barbir, Beirut, Lebanon (since 2020), run by Deena Kaddoura, RN — professional certified derma.
+Bilingual (English / Arabic, RTL) website for ByDee, a clinic in Barbir, Beirut, Lebanon, run by Deena Kaddoura, RN. Built with [Astro](https://astro.build) and outputs plain static HTML, CSS and a small amount of JavaScript.
 
-Plain HTML, CSS and vanilla JavaScript. No build step, no dependencies.
+## Commands
+
+```
+npm install
+npm run dev       # local dev server
+npm run build     # static site in dist/
+npm run preview   # serve dist/ locally
+```
 
 ## Structure
 
 ```
-clinic/
-├── index.html      # Page markup, SEO meta, structured data
-├── css/style.css   # Styles (light/dark theme, RTL support)
-├── js/main.js      # i18n, theme, carousel, before/after slider, booking form
-└── assets/
-    └── *           # Optional local images (see "Images" below)
+site.config.mjs        # domain, phone, WhatsApp, analytics IDs, Google Business links
+src/pages/             # / and /ar/ (home), /privacy, /terms, /medical-disclaimer (+ /ar/ copies)
+src/components/Home.astro   # the home page markup (used for both languages)
+src/i18n/en.json, ar.json   # all page text, one key per string
+src/i18n/legal.ts           # legal page text (DRAFT, have a lawyer review)
+src/layouts/           # Base (SEO, hreflang, structured data), Legal
+src/scripts/           # main.js (UI, booking form), analytics.js (consent-aware)
+src/assets/            # photos, optimised to WebP at build time
+public/                # favicon, icons, manifest, social image
 ```
 
-## Run locally
-
-Open `index.html` in a browser, or serve the folder:
-
-```
-npx serve .
-```
+English lives at `/`, Arabic at `/ar/`. Each page has hreflang tags and both appear in the sitemap. Add or change text in both JSON files using the same key.
 
 ## Images
 
-Every image first tries a local file in `assets/`. Use the exact name below with any of these extensions: `.webp`, `.jpg`, `.jpeg`, `.jfif`, `.png`, `.avif` (tried in that order). If no file is found, the site falls back to the stock photo. Names are case-sensitive on GitHub Pages.
+Put photos in `src/assets/` with these names (any of jpg, jpeg, png, webp, avif). If a file is missing, a stock photo is used.
 
-| File | Used for |
-| --- | --- |
-| `assets/home-hero` | Hero image |
-| `assets/deena-profile` | Deena's profile photo |
-| `assets/signature-facial` | Signature Facial card |
-| `assets/skin-rejuvenation` | Skin Rejuvenation card |
-| `assets/laser-resurfacing` | Laser Resurfacing card |
-| `assets/quadro-laser` | Quadro Laser card |
-| `assets/anti-wrinkle` | Anti-Wrinkle card |
-| `assets/results-1`, `assets/results-2` | Before / after cases |
+`home-hero`, `deena-profile`, `signature-facial`, `skin-rejuvenation`, `laser-resurfacing`, `quadro-laser`, `anti-wrinkle`, `results-1`, `results-2`
 
-### Fast image loading (build step)
+## Going live checklist
 
-`scripts/build.mjs` is run locally with `npm install --no-save sharp && node scripts/build.mjs` (output in `_site/`). It:
-
-- resizes images to at most 1200px wide and converts them to WebP (about 2.7 MB became 119 KB in testing);
-- matches your files case-insensitively with any extension, and writes the exact path into the page, so the browser makes one request per image with no 404 probing;
-- points images that have no local file straight at their stock photo;
-- preloads the hero image when a local one exists.
-
-Your original files in `assets/` are never changed. Opening `index.html` directly (no build) still works, using the slower extension lookup.
-
-## Configuration
-
-- **WhatsApp number:** `CONFIG.whatsappNumber` in `js/main.js` (digits only, international format) and the `https://wa.me/...` links in `index.html`. Currently `96181126500`.
-- **Booking form:** `CONFIG.formMode` — `'whatsapp'` opens WhatsApp with the request details; `'netlify'` posts to Netlify Forms and falls back to WhatsApp.
-- **Profile photo:** `assets/deena-profile` (About section).
-- **Contact details, hours, map:** Contact section in `index.html`; the map URL is the `data-src` on `.map`.
-
-## Translations
-
-English text lives in the HTML. Arabic strings are in `STR.ar` in `js/main.js`. To add a string, put `data-i18n="key"` on the element and add the key to `STR.ar`.
-
-## Still to fill in
-
-- Exact street address, building and map pin (add to Contact section and structured data)
-- Email address in the structured data
-- Instagram / Facebook handles (`[HANDLE]`)
-- Real, consented testimonials, then remove `hidden` from the Reviews section and its nav links (currently hidden)
-- Real, consented before/after photos (`assets/results-1`, `results-2`), then remove `hidden` from the Results section and nav links (currently hidden)
-- Name of the nursing association, if it should be shown
-- Counters in the "Why us" section (clients, treatments, satisfaction): confirm real figures, then remove `hidden` from the `.stats` list (currently hidden)
-- Open Graph cover image (`images/og-cover.jpg`) and logo
+- **Custom domain:** change `url` in `site.config.mjs`, then add the domain in Vercel.
+- **Analytics:** set `analytics.ga4Id` and/or `analytics.metaPixelId`. Nothing loads, and no cookie banner shows, while both are empty. When set, tracking loads only after the visitor accepts.
+- **Google Business Profile:** set `googleBusinessUrl` and `googleReviewUrl`, and keep the name, address and phone identical to the profile.
+- **Address and map pin:** add the full address and `geo` coordinates.
+- **Email:** set `email` to show it on legal pages and in structured data.
+- **Legal pages:** have a Lebanese lawyer review `src/i18n/legal.ts`.
+- **Hidden sections:** Reviews, Results (before/after) and the "Why us" counters carry a `hidden` attribute in `Home.astro`. Remove it, and the one on the matching nav links, once real consented content exists.
+- **Booking:** the form opens WhatsApp with the details. No data is stored on the site.

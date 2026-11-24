@@ -40,7 +40,7 @@ Every image first tries a local file in `assets/`. Use the exact name below with
 
 ### Fast image loading (build step)
 
-`scripts/build.mjs` runs in CI before deploying (or locally with `npm install --no-save sharp && node scripts/build.mjs`, output in `_site/`). It:
+`scripts/build.mjs` is run locally with `npm install --no-save sharp && node scripts/build.mjs` (output in `_site/`). It:
 
 - resizes images to at most 1200px wide and converts them to WebP (about 2.7 MB became 119 KB in testing);
 - matches your files case-insensitively with any extension, and writes the exact path into the page, so the browser makes one request per image with no 404 probing;
@@ -48,15 +48,6 @@ Every image first tries a local file in `assets/`. Use the exact name below with
 - preloads the hero image when a local one exists.
 
 Your original files in `assets/` are never changed. Opening `index.html` directly (no build) still works, using the slower extension lookup.
-
-## Deployment (GitHub Actions)
-
-`.github/workflows/deploy.yml` runs on every push and pull request:
-
-1. **Check**: confirms every local file referenced in `index.html` exists and that `js/main.js` has valid syntax.
-2. **Deploy**: on pushes to `main`, publishes `index.html`, `css/`, `js/` and `assets/` to GitHub Pages.
-
-One-time setup: in the GitHub repo go to **Settings → Pages → Source** and choose **GitHub Actions**.
 
 ## Configuration
 

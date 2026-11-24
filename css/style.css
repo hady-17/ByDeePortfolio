@@ -163,6 +163,7 @@ p { text-wrap: pretty; }
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
+[hidden] { display: none !important; }
 .section { padding-block: var(--section-y); position: relative; }
 .section--tint { background: var(--tint); }
 .section__head { margin-block-end: clamp(2.5rem, 2rem + 3vw, 4.5rem); max-width: 46rem; }

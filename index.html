@@ -113,8 +113,8 @@
         <ul class="nav__list">
           <li><a class="nav__link" href="#about" data-i18n="nav.about">About</a></li>
           <li><a class="nav__link" href="#treatments" data-i18n="nav.treatments">Treatments</a></li>
-          <li><a class="nav__link" href="#results" data-i18n="nav.results">Results</a></li>
-          <li><a class="nav__link" href="#reviews" data-i18n="nav.reviews">Reviews</a></li>
+          <li hidden><a class="nav__link" href="#results" data-i18n="nav.results">Results</a></li>
+          <li hidden><a class="nav__link" href="#reviews" data-i18n="nav.reviews">Reviews</a></li>
           <li><a class="nav__link" href="#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>
         <!-- Mobile-only extras inside the drawer -->
@@ -309,7 +309,8 @@
     <!-- =========================================================
          5. BEFORE / AFTER
          ========================================================= -->
-    <section class="section results" id="results" aria-labelledby="results-title">
+    <!-- HIDDEN until real, consented before/after photos exist: remove the hidden attribute (and on the nav links) to restore -->
+    <section class="section results" id="results" hidden aria-labelledby="results-title">
       <div class="container">
         <header class="section__head section__head--center">
           <p class="eyebrow reveal" data-i18n="results.eyebrow">Results</p>
@@ -366,7 +367,8 @@
         </header>
 
         <!-- Counters: edit data-count / data-suffix and the matching sr-only text -->
-        <dl class="stats">
+        <!-- HIDDEN until real figures are confirmed -->
+        <dl class="stats" hidden>
           <div class="stat reveal"><dt data-i18n="why.s1">Years of practice</dt><dd><span class="stat__num" data-count="3" data-suffix="+" aria-hidden="true">3+</span><span class="sr-only">3+</span></dd></div>
           <div class="stat reveal" style="--d:1"><dt data-i18n="why.s2">Clients cared for</dt><dd><span class="stat__num" data-count="8000" data-suffix="+" aria-hidden="true">8,000+</span><span class="sr-only">8,000+</span></dd></div>
           <div class="stat reveal" style="--d:2"><dt data-i18n="why.s3">Treatments performed</dt><dd><span class="stat__num" data-count="25000" data-suffix="+" aria-hidden="true">25,000+</span><span class="sr-only">25,000+</span></dd></div>
@@ -375,7 +377,7 @@
 
         <ul class="reasons" role="list">
           <li class="reason reveal"><h3 class="reason__title" data-i18n="why.r1t">Certified care, always</h3><p data-i18n="why.r1">Every treatment is performed by a registered nurse and certified aesthetic professional.</p></li>
-          <li class="reason reveal" style="--d:1"><h3 class="reason__title" data-i18n="why.r2t">Approved products only</h3><p data-i18n="why.r2">Authentic, traceable products and FDA or CE certified devices.</p></li>
+          <li class="reason reveal" style="--d:1"><h3 class="reason__title" data-i18n="why.r2t">Approved products only</h3><p data-i18n="why.r2">Authentic, traceable products and certified devices.</p></li>
           <li class="reason reveal" style="--d:2"><h3 class="reason__title" data-i18n="why.r3t">Honest advice</h3><p data-i18n="why.r3">We recommend less when less is better, and say no when a treatment isn't right for you.</p></li>
         </ul>
       </div>
@@ -384,7 +386,8 @@
     <!-- =========================================================
          7. TESTIMONIALS  (replace with REAL reviews before launch)
          ========================================================= -->
-    <section class="section reviews" id="reviews" aria-labelledby="reviews-title">
+    <!-- HIDDEN until real client reviews exist: remove the hidden attribute (and on the nav links) to restore -->
+    <section class="section reviews" id="reviews" hidden aria-labelledby="reviews-title">
       <div class="container">
         <header class="section__head section__head--center">
           <p class="eyebrow reveal" data-i18n="reviews.eyebrow">Testimonials</p>
@@ -534,7 +537,7 @@
       <nav aria-label="Footer">
         <ul class="footer__nav" role="list">
           <li><a href="#treatments" data-i18n="nav.treatments">Treatments</a></li>
-          <li><a href="#results" data-i18n="nav.results">Results</a></li>
+          <li hidden><a href="#results" data-i18n="nav.results">Results</a></li>
           <li><a href="#booking" data-i18n="cta.book">Book Now</a></li>
           <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>

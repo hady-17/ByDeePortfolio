@@ -62,10 +62,11 @@ English text lives in the HTML. Arabic strings are in `STR.ar` in `js/main.js`. 
 
 ## Still to fill in
 
-- `[DOMAIN]` in the canonical URL, Open Graph tags and structured data
-- `[EMAIL]` in the structured data
+- Exact street address, building and map pin (add to Contact section and structured data)
+- Email address in the structured data
 - Instagram / Facebook handles (`[HANDLE]`)
-- Real testimonials and client names (current ones are samples)
+- Real, consented testimonials, then remove `hidden` from the Reviews section and its nav links (currently hidden)
+- Real, consented before/after photos (`assets/results-1`, `results-2`), then remove `hidden` from the Results section and nav links (currently hidden)
 - Name of the nursing association, if it should be shown
-- Counters in the "Why us" section (clients, treatments, satisfaction) — replace with real figures
+- Counters in the "Why us" section (clients, treatments, satisfaction): confirm real figures, then remove `hidden` from the `.stats` list (currently hidden)
 - Open Graph cover image (`images/og-cover.jpg`) and logo

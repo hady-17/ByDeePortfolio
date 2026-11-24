@@ -25,6 +25,8 @@ jobs:
           python3 - <<'EOF'
           import re, os, sys
           html = open('index.html', encoding='utf-8').read()
+          # images with a data-fallback are optional (stock photo is used if the local file is missing)
+          html = re.sub(r'<img[^>]*data-fallback[^>]*>', '', html)
           refs = set(re.findall(r'(?:src|href)="([^"#?:]+?)"', html))
           refs |= set(re.findall(r'(\S+\.(?:webp|jpg|png|svg)) \d+w', html))
           missing = [r for r in sorted(refs) if not r.startswith(('http', '//', 'mailto', 'tel', 'data')) and not os.path.exists(r)]

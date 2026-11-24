@@ -44,11 +44,6 @@
   <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Tajawal:wght@300;400;500;700&display=swap">
 
-  <!-- LCP image preload (hero) -->
-  <link rel="preload" as="image" fetchpriority="high"
-        imagesrcset="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=640&q=70&fm=webp 640w, https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1100&q=70&fm=webp 1100w"
-        imagesizes="(min-width: 960px) 42vw, 90vw">
-
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231F1C19'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-family='Georgia,serif' font-size='34' fill='%23C9A96E'%3ED%3C/text%3E%3C/svg%3E">
 
@@ -181,9 +176,9 @@
         <div class="hero__media">
           <div class="hero__arch media">
             <img class="hero__img"
-                 src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1100&q=70&fm=webp"
-                 srcset="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=640&q=70&fm=webp 640w,
-                         https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1100&q=70&fm=webp 1100w"
+                 data-local="assets/hero"
+                 data-fallback="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1100&q=70&fm=webp"
+                 data-fallback-srcset="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=640&q=70&fm=webp 640w, https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1100&q=70&fm=webp 1100w"
                  sizes="(min-width: 960px) 42vw, 90vw"
                  width="1100" height="1375" alt="Calm treatment room with a client receiving a facial" fetchpriority="high" decoding="async"
                  data-i18n-attr="alt:img.hero">
@@ -201,8 +196,8 @@
       <div class="container about__grid">
         <figure class="about__media reveal">
           <div class="about__frame media">
-            <img src="assets/Dee.webp"
-                 srcset="assets/Dee.webp 800w"
+            <img data-local="assets/Dee"
+                 data-fallback="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=70&fm=webp"
                  sizes="(min-width: 960px) 38vw, 90vw"
                  width="800" height="1000" loading="lazy" decoding="async"
                  alt="Portrait of Deena Kaddoura, RN" data-i18n-attr="alt:img.doctor">
@@ -248,7 +243,7 @@
         <ul class="treatments__grid" role="list">
           <!-- Card: duplicate this <li> to add treatments. Keep data-treatment in sync with the <select> values. -->
           <li class="t-card reveal" style="--d:0">
-            <div class="t-card__media media"><img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="" ></div>
+            <div class="t-card__media media"><img data-local="assets/facial" data-fallback="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="" ></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">01</span>
               <h3 class="t-card__title" id="t1-title" data-i18n="t1.title">Signature Facial</h3>
@@ -260,7 +255,7 @@
             </div>
           </li>
           <li class="t-card reveal" style="--d:1">
-            <div class="t-card__media media"><img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
+            <div class="t-card__media media"><img data-local="assets/skin-rejuvenation" data-fallback="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">02</span>
               <h3 class="t-card__title" id="t2-title" data-i18n="t2.title">Skin Rejuvenation</h3>
@@ -272,7 +267,7 @@
             </div>
           </li>
           <li class="t-card reveal" style="--d:2">
-            <div class="t-card__media media"><img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
+            <div class="t-card__media media"><img data-local="assets/laser-resurfacing" data-fallback="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">03</span>
               <h3 class="t-card__title" id="t3-title" data-i18n="t3.title">Laser Resurfacing</h3>
@@ -284,7 +279,7 @@
             </div>
           </li>
           <li class="t-card reveal" style="--d:1">
-            <div class="t-card__media media"><img src="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
+            <div class="t-card__media media"><img data-local="assets/Quadro%20Laser" data-fallback="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">04</span>
               <h3 class="t-card__title" id="t5-title" data-i18n="t5.title">Quadro Laser</h3>
@@ -296,7 +291,7 @@
             </div>
           </li>
           <li class="t-card reveal" style="--d:2">
-            <div class="t-card__media media"><img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
+            <div class="t-card__media media"><img data-local="assets/Anti-Wrinkle" data-fallback="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt=""></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">05</span>
               <h3 class="t-card__title" id="t6-title" data-i18n="t6.title">Anti-Wrinkle</h3>
@@ -326,9 +321,9 @@
           <!-- One .ba block per case. "Before" layer is clipped; replace both images with real, consented photos. -->
           <figure class="ba-case reveal">
             <div class="ba" dir="ltr" style="--pos:50%">
-              <img class="ba__img" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="After treatment" data-i18n-attr="alt:results.afterAlt">
+              <img class="ba__img" data-local="assets/results-1" data-fallback="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="After treatment" data-i18n-attr="alt:results.afterAlt">
               <div class="ba__before" aria-hidden="true">
-                <img class="ba__img ba__img--before" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="">
+                <img class="ba__img ba__img--before" data-local="assets/results-1" data-fallback="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="">
               </div>
               <span class="ba__label ba__label--before" data-i18n="results.before">Before</span>
               <span class="ba__label ba__label--after" data-i18n="results.after">After</span>
@@ -342,9 +337,9 @@
 
           <figure class="ba-case reveal" style="--d:1">
             <div class="ba" dir="ltr" style="--pos:50%">
-              <img class="ba__img" src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="After treatment" data-i18n-attr="alt:results.afterAlt">
+              <img class="ba__img" data-local="assets/results-2" data-fallback="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="After treatment" data-i18n-attr="alt:results.afterAlt">
               <div class="ba__before" aria-hidden="true">
-                <img class="ba__img ba__img--before" src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="">
+                <img class="ba__img ba__img--before" data-local="assets/results-2" data-fallback="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="">
               </div>
               <span class="ba__label ba__label--before" data-i18n="results.before">Before</span>
               <span class="ba__label ba__label--after" data-i18n="results.after">After</span>

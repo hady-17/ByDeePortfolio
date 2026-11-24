@@ -636,7 +636,7 @@
      MISC — broken image fallback, footer year
      ====================================================================== */
   function initMisc() {
-    $$('img').forEach((img) => {
+    $$('img:not([data-local])').forEach((img) => {
       const mark = () => img.classList.add('is-broken');
       if (img.complete && img.naturalWidth === 0 && img.currentSrc) mark();
       img.addEventListener('error', mark, { once: true });
@@ -645,6 +645,32 @@
   }
 
   /* ---------- Boot ---------- */
+  /* ======================================================================
+     IMAGES: look for a local file in /assets (data-local = path without
+     extension) trying several extensions; if none exists, fall back to the
+     stock photo kept in data-fallback.
+     ====================================================================== */
+  function initImageFallbacks() {
+    const EXTS = ['webp', 'jpg', 'jpeg', 'jfif', 'png', 'avif'];
+    $$('img[data-local]').forEach((img) => {
+      let i = 0;
+      const useFallback = () => {
+        img.removeEventListener('error', next);
+        img.removeAttribute('srcset');
+        if (img.dataset.fallbackSrcset) img.srcset = img.dataset.fallbackSrcset;
+        if (img.dataset.fallback) img.src = img.dataset.fallback;
+        img.addEventListener('error', () => img.classList.add('is-broken'), { once: true });
+      };
+      const next = () => {
+        if (i < EXTS.length) img.src = `${img.dataset.local}.${EXTS[i++]}`;
+        else useFallback();
+      };
+      img.addEventListener('error', next);
+      next();
+    });
+  }
+
+  initImageFallbacks();
   initI18n();
   initTheme();
   const onScrollHeader = initHeaderNav();

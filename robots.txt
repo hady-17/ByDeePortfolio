@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bydee961.vercel.app/sitemap.xml

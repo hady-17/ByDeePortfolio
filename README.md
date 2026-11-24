@@ -23,6 +23,15 @@ Open `index.html` in a browser, or serve the folder:
 npx serve .
 ```
 
+## Deployment (GitHub Actions)
+
+`.github/workflows/deploy.yml` runs on every push and pull request:
+
+1. **Check**: confirms every local file referenced in `index.html` exists and that `js/main.js` has valid syntax.
+2. **Deploy**: on pushes to `main`, publishes `index.html`, `css/`, `js/` and `assets/` to GitHub Pages.
+
+One-time setup: in the GitHub repo go to **Settings → Pages → Source** and choose **GitHub Actions**.
+
 ## Configuration
 
 - **WhatsApp number:** `CONFIG.whatsappNumber` in `js/main.js` (digits only, international format) and the `https://wa.me/...` links in `index.html`. Currently `96181126500`.

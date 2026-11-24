@@ -54,12 +54,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Collect site files
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Optimise images and build site
         run: |
-          mkdir _site
-          cp index.html _site/
-          cp -r css js _site/
-          [ -d assets ] && cp -r assets _site/ || true
+          npm install --no-save sharp
+          node scripts/build.mjs
 
       - uses: actions/configure-pages@v5
 

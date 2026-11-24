@@ -38,6 +38,17 @@ Every image first tries a local file in `assets/`. Use the exact name below with
 | `assets/anti-wrinkle` | Anti-Wrinkle card |
 | `assets/results-1`, `assets/results-2` | Before / after cases |
 
+### Fast image loading (build step)
+
+`scripts/build.mjs` runs in CI before deploying (or locally with `npm install --no-save sharp && node scripts/build.mjs`, output in `_site/`). It:
+
+- resizes images to at most 1200px wide and converts them to WebP (about 2.7 MB became 119 KB in testing);
+- matches your files case-insensitively with any extension, and writes the exact path into the page, so the browser makes one request per image with no 404 probing;
+- points images that have no local file straight at their stock photo;
+- preloads the hero image when a local one exists.
+
+Your original files in `assets/` are never changed. Opening `index.html` directly (no build) still works, using the slower extension lookup.
+
 ## Deployment (GitHub Actions)
 
 `.github/workflows/deploy.yml` runs on every push and pull request:

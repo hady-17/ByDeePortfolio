@@ -9,6 +9,10 @@ export default {
   instagram: 'https://instagram.com/bydee961',
   email: '', // add a contact email; it is then shown on the legal pages and in structured data
 
+  // Optional online booking page (Fresha, Setmore, Cal.com...). When set, "Book" buttons on the
+  // treatment pages and the booking section offer it alongside the form and WhatsApp.
+  bookingUrl: '',
+
   // Google Business Profile. Fill these in once the profile is verified.
   googleBusinessUrl: '', // e.g. https://g.page/...  (added to structured data sameAs)
   googleReviewUrl: '',   // "Write a review" link; the Reviews link appears when set

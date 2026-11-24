@@ -1,6 +1,13 @@
 ---
 import Pic from './Pic.astro';
 import site from '../../site.config.mjs';
+import Faq from './Faq.astro';
+import Results from './Results.astro';
+import Reviews from './Reviews.astro';
+import { results } from '../data/results';
+import { reviews } from '../data/reviews';
+import { prices } from '../data/prices';
+import { treatments, ui } from '../i18n/treatments';
 import { makeT, otherLang, localePath, prefixOf, type Lang } from '../i18n';
 
 const { lang } = Astro.props as { lang: Lang };
@@ -8,6 +15,11 @@ const t = makeT(lang);
 const prefix = prefixOf(lang);
 const altLang = otherLang(lang);
 const altHref = localePath(altLang, '/');
+const hasResults = results.some((r) => r.consent);
+const hasReviews = reviews.length > 0;
+const u = ui[lang];
+const tpath = (slug: string) => localePath(lang, `/treatments/${slug}/`);
+const money = (n: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-LB' : 'en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 const waUrl = `https://wa.me/${site.whatsapp}`;
 ---
 
@@ -46,8 +58,9 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
         <ul class="nav__list">
           <li><a class="nav__link" href="#about">{t("nav.about")}</a></li>
           <li><a class="nav__link" href="#treatments">{t("nav.treatments")}</a></li>
-          <li hidden><a class="nav__link" href="#results">{t("nav.results")}</a></li>
-          <li hidden><a class="nav__link" href="#reviews">{t("nav.reviews")}</a></li>
+          <li hidden={!hasResults}><a class="nav__link" href="#results">{t("nav.results")}</a></li>
+          <li hidden={!hasReviews}><a class="nav__link" href="#reviews">{t("nav.reviews")}</a></li>
+          <li><a class="nav__link" href="#faq">{t("nav.faq")}</a></li>
           <li><a class="nav__link" href="#contact">{t("nav.contact")}</a></li>
         </ul>
         <!-- Mobile-only extras inside the drawer -->
@@ -178,8 +191,9 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
             <div class="t-card__media media"><Pic local="signature-facial" fallback="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Signature facial treatment at ByDee" /></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">01</span>
-              <h3 class="t-card__title" id="t1-title">{t("t1.title")}</h3>
+              <h3 class="t-card__title" id="t1-title"><a class="t-card__link" href={tpath("signature-facial")}>{t("t1.title")}</a></h3>
               <p class="t-card__text">{t("t1.text")}</p>
+              {prices["signature-facial"] && <p class="t-card__price">{u.from} {money(prices["signature-facial"].from)}</p>}
               <div class="t-card__meta">
                 <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t1.time")}</span></span>
                 <a class="link-arrow" href="#booking" data-treatment="facial" aria-describedby="t1-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -190,8 +204,9 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
             <div class="t-card__media media"><Pic local="skin-rejuvenation" fallback="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Skin rejuvenation treatment at ByDee" /></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">02</span>
-              <h3 class="t-card__title" id="t2-title">{t("t2.title")}</h3>
+              <h3 class="t-card__title" id="t2-title"><a class="t-card__link" href={tpath("skin-rejuvenation")}>{t("t2.title")}</a></h3>
               <p class="t-card__text">{t("t2.text")}</p>
+              {prices["skin-rejuvenation"] && <p class="t-card__price">{u.from} {money(prices["skin-rejuvenation"].from)}</p>}
               <div class="t-card__meta">
                 <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t2.time")}</span></span>
                 <a class="link-arrow" href="#booking" data-treatment="rejuvenation" aria-describedby="t2-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -202,8 +217,9 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
             <div class="t-card__media media"><Pic local="laser-resurfacing" fallback="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Laser resurfacing treatment at ByDee" /></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">03</span>
-              <h3 class="t-card__title" id="t3-title">{t("t3.title")}</h3>
+              <h3 class="t-card__title" id="t3-title"><a class="t-card__link" href={tpath("laser-resurfacing")}>{t("t3.title")}</a></h3>
               <p class="t-card__text">{t("t3.text")}</p>
+              {prices["laser-resurfacing"] && <p class="t-card__price">{u.from} {money(prices["laser-resurfacing"].from)}</p>}
               <div class="t-card__meta">
                 <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t3.time")}</span></span>
                 <a class="link-arrow" href="#booking" data-treatment="laser-resurfacing" aria-describedby="t3-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -214,8 +230,9 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
             <div class="t-card__media media"><Pic local="quadro-laser" fallback="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Quadro laser hair removal at ByDee" /></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">04</span>
-              <h3 class="t-card__title" id="t5-title">{t("t5.title")}</h3>
+              <h3 class="t-card__title" id="t5-title"><a class="t-card__link" href={tpath("laser-hair-removal")}>{t("t5.title")}</a></h3>
               <p class="t-card__text">{t("t5.text")}</p>
+              {prices["laser-hair-removal"] && <p class="t-card__price">{u.from} {money(prices["laser-hair-removal"].from)}</p>}
               <div class="t-card__meta">
                 <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t5.time")}</span></span>
                 <a class="link-arrow" href="#booking" data-treatment="hair-removal" aria-describedby="t5-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -226,8 +243,9 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
             <div class="t-card__media media"><Pic local="anti-wrinkle" fallback="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Anti-wrinkle treatment at ByDee" /></div>
             <div class="t-card__body">
               <span class="t-card__index" aria-hidden="true">05</span>
-              <h3 class="t-card__title" id="t6-title">{t("t6.title")}</h3>
+              <h3 class="t-card__title" id="t6-title"><a class="t-card__link" href={tpath("anti-wrinkle")}>{t("t6.title")}</a></h3>
               <p class="t-card__text">{t("t6.text")}</p>
+              {prices["anti-wrinkle"] && <p class="t-card__price">{u.from} {money(prices["anti-wrinkle"].from)}</p>}
               <div class="t-card__meta">
                 <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t6.time")}</span></span>
                 <a class="link-arrow" href="#booking" data-treatment="anti-wrinkle" aria-describedby="t6-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -241,52 +259,7 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
     <!-- =========================================================
          5. BEFORE / AFTER
          ========================================================= -->
-    <!-- HIDDEN until real, consented before/after photos exist: remove the hidden attribute (and on the nav links) to restore -->
-    <section class="section results" id="results" hidden aria-labelledby="results-title">
-      <div class="container">
-        <header class="section__head section__head--center">
-          <p class="eyebrow reveal">{t("results.eyebrow")}</p>
-          <h2 class="h2 reveal" id="results-title">{t("results.title")}</h2>
-          <p class="section__lead reveal">{t("results.lead")}</p>
-        </header>
-
-        <div class="results__grid">
-          <!-- One .ba block per case. "Before" layer is clipped; replace both images with real, consented photos. -->
-          <figure class="ba-case reveal">
-            <div class="ba" dir="ltr" style="--pos:50%">
-              <Pic class="ba__img" local="results-1" fallback="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="After treatment" />
-              <div class="ba__before" aria-hidden="true">
-                <Pic class="ba__img ba__img--before" local="results-1" fallback="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="" />
-              </div>
-              <span class="ba__label ba__label--before">{t("results.before")}</span>
-              <span class="ba__label ba__label--after">{t("results.after")}</span>
-              <div class="ba__handle" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
-                   aria-label="Before and after comparison">
-                <span class="ba__knob" aria-hidden="true"><svg class="icon"><use href="#i-chev-l"/></svg><svg class="icon"><use href="#i-chev-r"/></svg></span>
-              </div>
-            </div>
-            <figcaption class="ba-case__cap">{t("results.c1")}</figcaption>
-          </figure>
-
-          <figure class="ba-case reveal" style="--d:1">
-            <div class="ba" dir="ltr" style="--pos:50%">
-              <Pic class="ba__img" local="results-2" fallback="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="After treatment" />
-              <div class="ba__before" aria-hidden="true">
-                <Pic class="ba__img ba__img--before" local="results-2" fallback="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=70&fm=webp" width="900" height="1125" loading="lazy" decoding="async" alt="" />
-              </div>
-              <span class="ba__label ba__label--before">{t("results.before")}</span>
-              <span class="ba__label ba__label--after">{t("results.after")}</span>
-              <div class="ba__handle" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
-                   aria-label="Before and after comparison">
-                <span class="ba__knob" aria-hidden="true"><svg class="icon"><use href="#i-chev-l"/></svg><svg class="icon"><use href="#i-chev-r"/></svg></span>
-              </div>
-            </div>
-            <figcaption class="ba-case__cap">{t("results.c2")}</figcaption>
-          </figure>
-        </div>
-        <p class="results__note">{t("results.note")}</p>
-      </div>
-    </section>
+    <Results lang={lang} />
 
     <!-- =========================================================
          6. WHY CHOOSE US
@@ -318,38 +291,9 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
     <!-- =========================================================
          7. TESTIMONIALS  (replace with REAL reviews before launch)
          ========================================================= -->
-    <!-- HIDDEN until real client reviews exist: remove the hidden attribute (and on the nav links) to restore -->
-    <section class="section reviews" id="reviews" hidden aria-labelledby="reviews-title">
-      <div class="container">
-        <header class="section__head section__head--center">
-          <p class="eyebrow reveal">{t("reviews.eyebrow")}</p>
-          <h2 class="h2 reveal" id="reviews-title">{t("reviews.title")}</h2>
-        </header>
+    <Reviews lang={lang} />
 
-        <div class="carousel reveal" role="region" aria-roledescription="carousel" aria-label="Client testimonials">
-          <div class="carousel__track" aria-live="off">
-            <figure class="carousel__slide is-active" role="group" aria-roledescription="slide">
-              <blockquote><p>{t("reviews.q1")}</p></blockquote>
-              <figcaption><strong>Rima Haddad</strong> · <span>{t("t2.title")}</span></figcaption>
-            </figure>
-            <figure class="carousel__slide" role="group" aria-roledescription="slide">
-              <blockquote><p>{t("reviews.q2")}</p></blockquote>
-              <figcaption><strong>Layal Khoury</strong> · <span>{t("t1.title")}</span></figcaption>
-            </figure>
-            <figure class="carousel__slide" role="group" aria-roledescription="slide">
-              <blockquote><p>{t("reviews.q3")}</p></blockquote>
-              <figcaption><strong>Nour El Hajj</strong> · <span>{t("t5.title")}</span></figcaption>
-            </figure>
-          </div>
-          <div class="carousel__controls">
-            <button class="icon-btn icon-btn--line carousel__prev" type="button" aria-label="Previous testimonial"><svg class="icon icon--flip" aria-hidden="true"><use href="#i-chev-l"/></svg></button>
-            <div class="carousel__dots"></div>
-            <button class="icon-btn icon-btn--line carousel__next" type="button" aria-label="Next testimonial"><svg class="icon icon--flip" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
-          </div>
-        </div>
-        <p class="results__note">{t("reviews.note")}</p>
-      </div>
-    </section>
+    <Faq lang={lang} />
 
     <!-- =========================================================
          8. BOOKING
@@ -360,6 +304,7 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
           <p class="eyebrow reveal">{t("booking.eyebrow")}</p>
           <h2 class="h2 reveal" id="booking-title">{t("booking.title")}</h2>
           <p class="reveal">{t("booking.lead")}</p>
+          {site.bookingUrl && <a class="btn btn--primary btn--lg reveal" href={site.bookingUrl} target="_blank" rel="noopener"><span>{t("booking.online")}</span></a>}
           <a class="btn btn--wa btn--lg reveal js-wa" href={waUrl} target="_blank" rel="noopener">
             <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
             <span>{t("cta.whatsapp")}</span>
@@ -470,7 +415,7 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
       <nav aria-label="Footer">
         <ul class="footer__nav" role="list">
           <li><a href="#treatments">{t("nav.treatments")}</a></li>
-          <li hidden><a href="#results">{t("nav.results")}</a></li>
+          <li hidden={!hasResults}><a href="#results">{t("nav.results")}</a></li>
           <li><a href="#booking">{t("cta.book")}</a></li>
           <li><a href="#contact">{t("nav.contact")}</a></li>
         </ul>

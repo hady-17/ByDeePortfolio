@@ -16,8 +16,8 @@ import site from '../../site.config.mjs';
 import { dirOf, otherLang, localePath, makeT, type Lang } from '../i18n';
 import CookieBanner from '../components/CookieBanner.astro';
 
-interface Props { lang: Lang; path?: string; title?: string; description?: string; noindex?: boolean; schema?: boolean }
-const { lang, path = '/', title, description, noindex = false, schema = false } = Astro.props;
+interface Props { lang: Lang; path?: string; title?: string; description?: string; noindex?: boolean; schema?: boolean; jsonLd?: object[] }
+const { lang, path = '/', title, description, noindex = false, schema = false, jsonLd = [] } = Astro.props;
 const t = makeT(lang);
 const abs = (l: Lang) => new URL(localePath(l, path), site.url).href;
 const pageTitle = title ?? t('meta.title');
@@ -91,6 +91,7 @@ const ld = {
     })();
   </script>
 
+  {jsonLd.map((o) => <script type="application/ld+json" set:html={JSON.stringify(o)} />)}
   {schema && <script type="application/ld+json" set:html={JSON.stringify(ld)} />}
 </head>
 <body data-ga={site.analytics.ga4Id} data-pixel={site.analytics.metaPixelId}>

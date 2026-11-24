@@ -1,0 +1,51 @@
+---
+// Real before/after cases from src/data/results.ts. Renders nothing while the list is empty.
+import Pic from './Pic.astro';
+import { results } from '../data/results';
+import { treatments, ui } from '../i18n/treatments';
+import { makeT, type Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = makeT(lang);
+const u = ui[lang];
+const cases = results.filter((r) => r.consent);
+const used = treatments.filter((tr) => cases.some((c) => c.treatment === tr.slug));
+---
+{cases.length > 0 && (
+  <section class="section results" id="results" aria-labelledby="results-title">
+    <div class="container">
+      <header class="section__head section__head--center">
+        <p class="eyebrow reveal">{t('results.eyebrow')}</p>
+        <h2 class="h2 reveal" id="results-title">{t('results.title')}</h2>
+        <p class="section__lead reveal">{t('results.lead')}</p>
+      </header>
+
+      {used.length > 1 && (
+        <div class="chips reveal" role="group" aria-label={t('results.eyebrow')}>
+          <button class="chip is-active" type="button" data-filter="all" aria-pressed="true">{u.all}</button>
+          {used.map((tr) => <button class="chip" type="button" data-filter={tr.slug} aria-pressed="false">{t(`${tr.key}.title`)}</button>)}
+        </div>
+      )}
+
+      <div class="results__grid">
+        {cases.map((c) => (
+          <figure class="ba-case reveal" data-treatment-case={c.treatment}>
+            <div class="ba" dir="ltr" style="--pos:50%">
+              <Pic class="ba__img" local={`${c.id}-after`} width="900" height="1125" alt={t('results.afterAlt')} />
+              <div class="ba__before" aria-hidden="true">
+                <Pic class="ba__img ba__img--before" local={`${c.id}-before`} width="900" height="1125" alt="" />
+              </div>
+              <span class="ba__label ba__label--before">{t('results.before')}</span>
+              <span class="ba__label ba__label--after">{t('results.after')}</span>
+              <div class="ba__handle" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label={t('results.slider')}>
+                <span class="ba__knob" aria-hidden="true"><svg class="icon"><use href="#i-chev-l"/></svg><svg class="icon"><use href="#i-chev-r"/></svg></span>
+              </div>
+            </div>
+            <figcaption class="ba-case__cap">{c.caption[lang]} · {c.sessions} {u.sessionsCount}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="results__note">{u.consent}</p>
+    </div>
+  </section>
+)}

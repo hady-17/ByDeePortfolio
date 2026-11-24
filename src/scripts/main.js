@@ -354,6 +354,10 @@ import { initAnalytics } from './analytics.js';
     });
     document.addEventListener('langchange', () => fields.forEach((f) => { if (f.closest('.field').classList.contains('has-error')) check(f); }));
 
+    // Links such as /?treatment=facial#booking pre-select the dropdown
+    const wanted = new URLSearchParams(location.search).get('treatment');
+    if (wanted && Array.from(select.options).some((o) => o.value === wanted)) select.value = wanted;
+
     // Treatment cards pre-select the dropdown
     $$('[data-treatment]').forEach((a) => a.addEventListener('click', () => {
       select.value = a.dataset.treatment;
@@ -413,6 +417,16 @@ import { initAnalytics } from './analytics.js';
   /* ======================================================================
      MAP — click-to-load facade
      ====================================================================== */
+  function initResultsFilter() {
+    const chips = $$('.chip');
+    if (!chips.length) return;
+    chips.forEach((chip) => chip.addEventListener('click', () => {
+      const f = chip.dataset.filter;
+      chips.forEach((c) => { const on = c === chip; c.classList.toggle('is-active', on); c.setAttribute('aria-pressed', String(on)); });
+      $$('[data-treatment-case]').forEach((fig) => { fig.hidden = f !== 'all' && fig.dataset.treatmentCase !== f; });
+    }));
+  }
+
   function initMap() {
     const btn = $('.js-map-load');
     if (!btn) return;
@@ -466,6 +480,7 @@ import { initAnalytics } from './analytics.js';
   safe(initReveal);
   safe(initCounters);
   safe(initBeforeAfter);
+  safe(initResultsFilter);
   safe(initCarousel);
   safe(initWhatsAppLinks);
   safe(initBooking);

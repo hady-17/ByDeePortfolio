@@ -15,10 +15,12 @@ npm run preview   # serve dist/ locally
 
 ```
 site.config.mjs        # domain, phone, WhatsApp, analytics IDs, Google Business links
-src/pages/             # / and /ar/ (home), /privacy, /terms, /medical-disclaimer (+ /ar/ copies)
+src/pages/             # / and /ar/ (home), /treatments/<slug>/, /privacy, /terms, /medical-disclaimer (+ /ar/ copies)
 src/components/Home.astro   # the home page markup (used for both languages)
 src/i18n/en.json, ar.json   # all page text, one key per string
 src/i18n/legal.ts           # legal page text (DRAFT, have a lawyer review)
+src/i18n/treatments.ts      # treatment page content, general FAQ (DRAFT, Deena to review)
+src/data/                   # prices.ts, results.ts, reviews.ts: empty until filled in
 src/layouts/           # Base (SEO, hreflang, structured data), Legal
 src/scripts/           # main.js (UI, booking form), analytics.js (consent-aware)
 src/assets/            # photos, optimised to WebP at build time
@@ -41,5 +43,10 @@ Put photos in `src/assets/` with these names (any of jpg, jpeg, png, webp, avif)
 - **Address and map pin:** add the full address and `geo` coordinates.
 - **Email:** set `email` to show it on legal pages and in structured data.
 - **Legal pages:** have a Lebanese lawyer review `src/i18n/legal.ts`.
-- **Hidden sections:** Reviews, Results (before/after) and the "Why us" counters carry a `hidden` attribute in `Home.astro`. Remove it, and the one on the matching nav links, once real consented content exists.
+- **Prices and packages:** fill `src/data/prices.ts`. Prices show on the treatment cards and pages only once added.
+- **Reviews:** add real, agreed reviews to `src/data/reviews.ts`. The section and its nav link appear automatically.
+- **Before/after cases:** add photo pairs to `src/assets/` and a consented entry in `src/data/results.ts`. The section, filter buttons and nav link appear automatically.
+- **Online booking:** set `bookingUrl` in `site.config.mjs` (Fresha, Setmore, Cal.com...). A "Book online" button then appears.
+- **Treatment and FAQ text:** have Deena check `src/i18n/treatments.ts` (sessions, downtime, who should avoid, aftercare) so it matches her practice.
+- **"Why us" counters:** still hidden with a `hidden` attribute in `Home.astro` until real figures are confirmed.
 - **Booking:** the form opens WhatsApp with the details. No data is stored on the site.

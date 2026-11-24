@@ -1,0 +1,24 @@
+---
+import { generalFaq, ui } from '../i18n/treatments';
+import type { Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const items = generalFaq[lang];
+const u = ui[lang];
+---
+<section class="section faq" id="faq" aria-labelledby="faq-title">
+  <div class="container faq__inner">
+    <header class="section__head">
+      <p class="eyebrow reveal">{u.faqEyebrow}</p>
+      <h2 class="h2 reveal" id="faq-title">{u.faqTitle}</h2>
+    </header>
+    <div class="faq__list reveal">
+      {items.map((f) => (
+        <details class="faq__item">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

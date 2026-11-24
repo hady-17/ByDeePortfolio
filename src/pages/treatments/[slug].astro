@@ -1,0 +1,9 @@
+---
+import TreatmentPage from '../../layouts/TreatmentPage.astro';
+import { treatments } from '../../i18n/treatments';
+export function getStaticPaths() {
+  return treatments.map((t) => ({ params: { slug: t.slug } }));
+}
+const { slug } = Astro.params;
+---
+<TreatmentPage lang="en" slug={slug!} />

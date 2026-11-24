@@ -728,3 +728,56 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 .legal ul { padding-inline-start: 1.25rem; list-style: disc; }
 .legal a { text-decoration: underline; text-underline-offset: 3px; }
 .legal a.link-arrow { text-decoration: none; }
+
+/* ===== Phase 2: treatment pages, FAQ, filters, prices ===== */
+.subnav { display: none; gap: var(--s-5); font-size: var(--fs-sm); }
+.subnav a { color: var(--text-muted); display: inline-flex; min-height: 44px; align-items: center; }
+.subnav a:hover { color: var(--text); }
+@media (min-width: 900px) { .subnav { display: flex; } }
+.header__book { white-space: nowrap; }
+@media (max-width: 520px) { .header__book { display: none; } }
+
+.t-card__link { color: inherit; text-decoration: none; }
+.t-card__link:hover, .t-card__link:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+.t-card__price { font-size: var(--fs-sm); font-weight: 600; color: var(--accent); margin-block-start: var(--s-2); }
+
+.tpage { padding-block: calc(var(--s-9, 6rem) + 1rem) var(--s-8, 4rem); }
+.crumbs { font-size: var(--fs-sm); color: var(--text-muted); margin-block-end: var(--s-5); }
+.crumbs a { text-decoration: underline; text-underline-offset: 3px; }
+.tpage__hero { display: grid; gap: var(--s-6); align-items: center; }
+@media (min-width: 900px) { .tpage__hero { grid-template-columns: 1.1fr .9fr; gap: var(--s-8, 4rem); } }
+.tpage__media { border-radius: 24px; overflow: hidden; aspect-ratio: 9 / 7; }
+.tpage__media img { width: 100%; height: 100%; object-fit: cover; }
+.tpage__facts { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-5); margin-block: var(--s-4); color: var(--text-muted); }
+.tpage__facts li { display: inline-flex; align-items: center; gap: var(--s-2); }
+.tpage__price { font-weight: 600; color: var(--accent); }
+.tpage__cta { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-block-start: var(--s-5); }
+.tpage__body { max-width: 46rem; margin-block-start: var(--s-8, 4rem); }
+.tpage__h { font-size: 1.5rem; margin-block: var(--s-7, 2.5rem) var(--s-3); }
+.tpage__body p, .tpage__body li { color: var(--text-muted); line-height: 1.75; }
+.tpage__body ul:not(.tick):not(.packs):not(.tpage__others) { padding-inline-start: 1.25rem; list-style: disc; }
+.tick { display: grid; gap: var(--s-2); }
+.tick li { position: relative; padding-inline-start: 1.5rem; }
+.tick li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: .7em; width: .6rem; height: .6rem; border-radius: 50%; background: var(--accent); }
+.tpage__note { margin-block-start: var(--s-7, 2.5rem); font-size: var(--fs-sm); }
+.tpage__note a { text-decoration: underline; }
+.tpage__others { display: grid; gap: var(--s-2); }
+.packs { display: grid; gap: var(--s-3); }
+.pack { display: grid; gap: 2px; padding: var(--s-4); border: 1px solid var(--line-strong); border-radius: 14px; }
+.pack__price { font-weight: 600; color: var(--accent); }
+
+.faq__inner { max-width: 50rem; }
+.faq__list { display: grid; gap: var(--s-3); }
+.faq__item { border: 1px solid var(--line-strong); border-radius: 14px; padding: 0 var(--s-5); }
+.faq__item summary { cursor: pointer; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); font-weight: 500; list-style: none; }
+.faq__item summary::-webkit-details-marker { display: none; }
+.faq__item summary::after { content: "+"; font-size: 1.4rem; color: var(--accent); flex: none; }
+.faq__item[open] summary::after { content: "\2212"; }
+.faq__item p { padding-block-end: var(--s-4); color: var(--text-muted); line-height: 1.7; }
+
+.chips { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-2); margin-block-end: var(--s-6); }
+.chip { min-height: 44px; padding-inline: var(--s-5); border: 1px solid var(--line-strong); border-radius: 999px; font-size: var(--fs-sm); }
+.chip.is-active { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.ba-case[hidden] { display: none; }
+.reviews__more { text-align: center; margin-block-start: var(--s-5); }
+.tick, .tick li { list-style: none; }

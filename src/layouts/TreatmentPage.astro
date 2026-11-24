@@ -1,0 +1,124 @@
+---
+import Base from './Base.astro';
+import Pic from '../components/Pic.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import site from '../../site.config.mjs';
+import { prices, packages } from '../data/prices';
+import { treatments, ui } from '../i18n/treatments';
+import { makeT, localePath, type Lang } from '../i18n';
+
+const { lang, slug } = Astro.props as { lang: Lang; slug: string };
+const t = makeT(lang);
+const u = ui[lang];
+const tr = treatments.find((x) => x.slug === slug)!;
+const c = tr.copy[lang];
+const title = t(`${tr.key}.title`);
+const path = `/treatments/${slug}/`;
+const home = localePath(lang, '/');
+const stock: Record<string, string> = {"signature-facial": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&w=720&q=70&fm=webp", "skin-rejuvenation": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=720&q=70&fm=webp", "laser-resurfacing": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=720&q=70&fm=webp", "laser-hair-removal": "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=720&q=70&fm=webp", "anti-wrinkle": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=70&fm=webp"};
+const price = prices[slug];
+const packs = packages.filter((p) => p.treatment === slug);
+const others = treatments.filter((x) => x.slug !== slug);
+const bookHref = site.bookingUrl || `${home}?treatment=${tr.book}#booking`;
+const money = (n: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-LB' : 'en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+const abs = (p: string) => new URL(p, site.url).href;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: title,
+    description: c.intro,
+    serviceType: title,
+    inLanguage: lang,
+    url: abs(localePath(lang, path)),
+    provider: { '@type': 'HealthAndBeautyBusiness', name: site.name, url: abs(home) },
+    areaServed: { '@type': 'City', name: 'Beirut' },
+    ...(price ? { offers: { '@type': 'Offer', price: price.from, priceCurrency: 'USD', priceSpecification: { '@type': 'PriceSpecification', minPrice: price.from, priceCurrency: 'USD' } } } : {})
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: c.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: u.home, item: abs(home) },
+      { '@type': 'ListItem', position: 2, name: title, item: abs(localePath(lang, path)) }
+    ]
+  }
+];
+---
+<Base lang={lang} path={path} title={`${title} | ${t('meta.short')}`} description={c.intro} jsonLd={jsonLd}>
+  <SiteHeader lang={lang} path={path} bookValue={tr.book} />
+
+  <main id="main" class="tpage">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href={home}>{u.home}</a> <span aria-hidden="true">/</span> <span aria-current="page">{title}</span>
+      </nav>
+
+      <div class="tpage__hero">
+        <div class="tpage__lead">
+          <p class="eyebrow">{t('treat.eyebrow')}</p>
+          <h1 class="h2">{title}</h1>
+          <p class="section__lead">{c.intro}</p>
+          <ul class="tpage__facts" role="list">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{u.duration}: {t(`${tr.key}.time`)}</span></li>
+            {price && <li><span class="tpage__price">{u.from} {money(price.from)}{price.note ? ` · ${price.note[lang]}` : ''}</span></li>}
+          </ul>
+          <div class="tpage__cta">
+            <a class="btn btn--primary btn--lg" href={bookHref}><span>{u.book}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn--ghost btn--lg js-wa" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg><span>WhatsApp</span></a>
+          </div>
+        </div>
+        <div class="tpage__media media">
+          <Pic local={tr.image} fallback={stock[slug]} width="720" height="560" sizes="(min-width: 900px) 40vw, 90vw" alt={title} loading="eager" fetchpriority="high" />
+        </div>
+      </div>
+
+      <div class="tpage__body">
+        <section><h2 class="tpage__h">{u.suits}</h2><ul class="tick">{c.suits.map((s) => <li>{s}</li>)}</ul></section>
+        <section><h2 class="tpage__h">{u.how}</h2><p>{c.how}</p></section>
+        <section><h2 class="tpage__h">{u.sessions}</h2><p>{c.sessions}</p></section>
+        <section><h2 class="tpage__h">{u.downtime}</h2><p>{c.downtime}</p></section>
+        <section><h2 class="tpage__h">{u.results}</h2><p>{c.results}</p></section>
+        {c.prep && <section><h2 class="tpage__h">{u.prep}</h2><ul class="tick">{c.prep.map((s) => <li>{s}</li>)}</ul></section>}
+        <section id="aftercare"><h2 class="tpage__h">{u.aftercare}</h2><ul class="tick">{c.aftercare.map((s) => <li>{s}</li>)}</ul></section>
+        <section><h2 class="tpage__h">{u.avoid}</h2><ul>{c.avoid.map((s) => <li>{s}</li>)}</ul></section>
+
+        {packs.length > 0 && (
+          <section>
+            <h2 class="tpage__h">{u.packages}</h2>
+            <ul class="packs" role="list">
+              {packs.map((p) => (
+                <li class="pack"><strong>{p.name[lang]}</strong><span class="pack__price">{money(p.price)}</span><span class="pack__inc">{u.includes}: {p.includes[lang]}</span></li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section>
+          <h2 class="tpage__h">{u.faq}</h2>
+          <div class="faq__list">
+            {c.faqs.map((f) => <details class="faq__item"><summary>{f.q}</summary><p>{f.a}</p></details>)}
+          </div>
+        </section>
+
+        <p class="tpage__note">{u.note} <a href={localePath(lang, '/medical-disclaimer/')}>{t('legal.disclaimer')}</a></p>
+
+        <section>
+          <h2 class="tpage__h">{u.other}</h2>
+          <ul class="tpage__others" role="list">
+            {others.map((o) => <li><a class="link-arrow" href={localePath(lang, `/treatments/${o.slug}/`)}><span>{t(`${o.key}.title`)}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>)}
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <SiteFooter lang={lang} />
+</Base>

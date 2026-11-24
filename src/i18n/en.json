@@ -71,9 +71,6 @@
   "results.lead": "Drag the handle, or focus it and use the arrow keys, to compare.",
   "results.before": "Before",
   "results.after": "After",
-  "results.c1": "Skin rejuvenation · 3 sessions",
-  "results.c2": "Laser resurfacing · 2 sessions",
-  "results.note": "Placeholder images. Individual results vary. All photos are shared with patient consent.",
   "why.eyebrow": "Why us",
   "why.title": "Trust, measured.",
   "why.s1": "Years of practice",
@@ -88,10 +85,6 @@
   "why.r3": "We recommend less when less is better, and say no when a treatment isn't right for you.",
   "reviews.eyebrow": "Testimonials",
   "reviews.title": "In their words.",
-  "reviews.q1": "I was nervous about looking “done”. Instead, everyone just says I look rested. The consultation alone was worth it.",
-  "reviews.q2": "Calm, spotless and genuinely honest. They talked me out of a treatment I didn't need.",
-  "reviews.q3": "Six laser sessions in and I've stopped thinking about it. Comfortable, quick and always on time.",
-  "reviews.note": "Sample reviews shown. Replace with real client reviews before publishing.",
   "booking.eyebrow": "Book",
   "booking.title": "Your first visit starts with a conversation.",
   "booking.lead": "Send a request and we'll confirm by phone during opening hours. Prefer to chat? Message us on WhatsApp and we'll reply quickly.",
@@ -132,5 +125,9 @@
   "cookie.accept": "Accept",
   "cookie.decline": "Decline",
   "cookie.settings": "Cookie settings",
-  "contact.review": "Leave a Google review"
+  "contact.review": "Leave a Google review",
+  "nav.faq": "FAQ",
+  "meta.short": "ByDee Aesthetics in Beirut",
+  "booking.online": "Book online",
+  "treat.more": "Learn more"
 }

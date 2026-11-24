@@ -1,0 +1,7 @@
+---
+import Base from '../layouts/Base.astro';
+import { generalFaq } from '../i18n/treatments';
+import Home from '../components/Home.astro';
+const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: generalFaq['en'].map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+---
+<Base lang="en" path="/" schema jsonLd={[faqLd]}><Home lang="en" /></Base>

@@ -1,0 +1,435 @@
+---
+import Pic from './Pic.astro';
+import site from '../../site.config.mjs';
+import Faq from './Faq.astro';
+import Results from './Results.astro';
+import Reviews from './Reviews.astro';
+import { results } from '../data/results';
+import { reviews } from '../data/reviews';
+import { prices } from '../data/prices';
+import { treatments, ui } from '../i18n/treatments';
+import { makeT, otherLang, localePath, prefixOf, type Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = makeT(lang);
+const prefix = prefixOf(lang);
+const altLang = otherLang(lang);
+const altHref = localePath(altLang, '/');
+const hasResults = results.some((r) => r.consent);
+const hasReviews = reviews.length > 0;
+const u = ui[lang];
+const tpath = (slug: string) => localePath(lang, `/treatments/${slug}/`);
+const money = (n: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-LB' : 'en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+const waUrl = `https://wa.me/${site.whatsapp}`;
+---
+
+  <!-- ===== Icon sprite (Lucide-style, MIT/ISC, inline = zero requests) ===== -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h10"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9 10.5c.5 1.6 2 3.1 3.6 3.6l1.1-1.1 1.8.8-.4 1.6c-3.3.2-7-3.4-6.8-6.8l1.6-.4.8 1.8Z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">{t("a11y.skip")}</a>
+
+  <!-- =========================================================
+       1. HEADER
+       ========================================================= -->
+  <header class="header" id="header">
+    <div class="container header__bar">
+      <a class="logo" href="#top" aria-label="ByDee, home">
+        <span class="logo__mark" aria-hidden="true">D</span>
+        <span class="logo__text">ByDee<small>{t("logo.sub")}</small></span>
+      </a>
+
+      <nav class="nav" id="site-nav" aria-label="Main">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="#about">{t("nav.about")}</a></li>
+          <li><a class="nav__link" href="#treatments">{t("nav.treatments")}</a></li>
+          <li hidden={!hasResults}><a class="nav__link" href="#results">{t("nav.results")}</a></li>
+          <li hidden={!hasReviews}><a class="nav__link" href="#reviews">{t("nav.reviews")}</a></li>
+          <li><a class="nav__link" href="#faq">{t("nav.faq")}</a></li>
+          <li><a class="nav__link" href="#contact">{t("nav.contact")}</a></li>
+        </ul>
+        <!-- Mobile-only extras inside the drawer -->
+        <div class="nav__extras">
+          <a class="pill-btn" href={altHref} hreflang={altLang} lang={altLang} aria-label={t("a11y.lang")}>{t("lang.other")}</a>
+          <button class="pill-btn js-theme-toggle" type="button" aria-pressed="false">
+            <svg class="icon icon--sun"><use href="#i-sun"/></svg><svg class="icon icon--moon"><use href="#i-moon"/></svg>
+            <span>{t("theme.label")}</span>
+          </button>
+        </div>
+      </nav>
+
+      <div class="header__tools">
+        <a class="icon-btn header__desktop-only" href={altHref} hreflang={altLang} lang={altLang} aria-label={t("a11y.lang")}>{t("lang.other")}</a>
+        <button class="icon-btn js-theme-toggle header__desktop-only" type="button" aria-pressed="false">
+          <svg class="icon icon--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="icon icon--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
+        <a class="btn btn--primary btn--sm" href="#booking"><span>{t("cta.book")}</span></a>
+        <button class="icon-btn nav-toggle js-nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu">
+          <svg class="icon icon--open" aria-hidden="true"><use href="#i-menu"/></svg>
+          <svg class="icon icon--close" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- =========================================================
+         2. HERO
+         ========================================================= -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <p class="eyebrow hero__eyebrow"><span>{t("hero.eyebrow")}</span> · {t("city.beirut")}</p>
+          <h1 class="hero__title" id="hero-title">
+            <span class="hero__line"><span style="--i:0">{t("hero.l1")}</span></span>
+            <span class="hero__line hero__line--accent"><span style="--i:1">{t("hero.l2")}</span></span>
+            <span class="hero__line"><span style="--i:2">{t("hero.l3")}</span></span>
+          </h1>
+          <p class="hero__lead">{t("hero.lead")}</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary btn--lg btn--shine" href="#booking">
+              <span>{t("cta.bookConsult")}</span>
+              <svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+            <a class="btn btn--ghost btn--lg js-wa" href={waUrl} target="_blank" rel="noopener">
+              <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+          <ul class="hero__trust" role="list">
+            <li>{t("hero.t1")}</li>
+            <li>{t("hero.t2")}</li>
+            <li>{t("hero.t3")}</li>
+          </ul>
+        </div>
+
+        <div class="hero__media">
+          <div class="hero__arch media">
+            <Pic class="hero__img"
+                 local="home-hero"
+                 fallback="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1100&q=70&fm=webp"
+                 fallbackSrcset="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=640&q=70&fm=webp 640w, https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1100&q=70&fm=webp 1100w"
+                 sizes="(min-width: 960px) 42vw, 90vw"
+                 width="1100" height="1375" alt="Calm treatment room with a client receiving a facial" fetchpriority="high" decoding="async" />
+          </div>
+          <p class="hero__badge"><span>{t("hero.since")}</span> <strong>2020</strong></p>
+        </div>
+      </div>
+      <a class="hero__scroll" href="#about"><span>{t("hero.scroll")}</span><span class="hero__scroll-line" aria-hidden="true"></span></a>
+    </section>
+
+    <!-- =========================================================
+         3. ABOUT
+         ========================================================= -->
+    <section class="section about" id="about" aria-labelledby="about-title">
+      <div class="container about__grid">
+        <figure class="about__media reveal">
+          <div class="about__frame media">
+            <Pic local="deena-profile"
+                 fallback="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=70&fm=webp"
+                 sizes="(min-width: 960px) 38vw, 90vw"
+                 width="800" height="1000" loading="lazy" decoding="async"
+                 alt="Portrait of Deena Kaddoura, RN" />
+          </div>
+          <figcaption class="about__caption">
+            <strong>Deena Kaddoura, RN</strong>
+            <span>{t("about.role")}</span>
+          </figcaption>
+        </figure>
+
+        <div class="about__content">
+          <p class="eyebrow reveal">{t("about.eyebrow")}</p>
+          <h2 class="h2 reveal" id="about-title">{t("about.title")}</h2>
+          <p class="reveal">{t("about.p1")}</p>
+          <p class="reveal">{t("about.p2")}</p>
+
+          <ul class="credentials reveal" role="list">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>{t("about.c1")}</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>{t("about.c2")}</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>{t("about.c3")}</span></li>
+          </ul>
+
+          <blockquote class="about__quote reveal">
+            <p>{t("about.quote")}</p>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         4. TREATMENTS
+         ========================================================= -->
+    <section class="section section--tint treatments" id="treatments" aria-labelledby="treat-title">
+      <div class="container">
+        <header class="section__head section__head--split">
+          <div>
+            <p class="eyebrow reveal">{t("treat.eyebrow")}</p>
+            <h2 class="h2 reveal" id="treat-title">{t("treat.title")}</h2>
+          </div>
+          <p class="section__lead reveal">{t("treat.lead")}</p>
+        </header>
+
+        <ul class="treatments__grid" role="list">
+          <!-- Card: duplicate this <li> to add treatments. Keep data-treatment in sync with the <select> values. -->
+          <li class="t-card reveal" style="--d:0">
+            <div class="t-card__media media"><Pic local="signature-facial" fallback="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Signature facial treatment at ByDee" /></div>
+            <div class="t-card__body">
+              <span class="t-card__index" aria-hidden="true">01</span>
+              <h3 class="t-card__title" id="t1-title"><a class="t-card__link" href={tpath("signature-facial")}>{t("t1.title")}</a></h3>
+              <p class="t-card__text">{t("t1.text")}</p>
+              {prices["signature-facial"] && <p class="t-card__price">{u.from} {money(prices["signature-facial"].from)}</p>}
+              <div class="t-card__meta">
+                <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t1.time")}</span></span>
+                <a class="link-arrow" href="#booking" data-treatment="facial" aria-describedby="t1-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              </div>
+            </div>
+          </li>
+          <li class="t-card reveal" style="--d:1">
+            <div class="t-card__media media"><Pic local="skin-rejuvenation" fallback="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Skin rejuvenation treatment at ByDee" /></div>
+            <div class="t-card__body">
+              <span class="t-card__index" aria-hidden="true">02</span>
+              <h3 class="t-card__title" id="t2-title"><a class="t-card__link" href={tpath("skin-rejuvenation")}>{t("t2.title")}</a></h3>
+              <p class="t-card__text">{t("t2.text")}</p>
+              {prices["skin-rejuvenation"] && <p class="t-card__price">{u.from} {money(prices["skin-rejuvenation"].from)}</p>}
+              <div class="t-card__meta">
+                <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t2.time")}</span></span>
+                <a class="link-arrow" href="#booking" data-treatment="rejuvenation" aria-describedby="t2-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              </div>
+            </div>
+          </li>
+          <li class="t-card reveal" style="--d:2">
+            <div class="t-card__media media"><Pic local="laser-resurfacing" fallback="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Laser resurfacing treatment at ByDee" /></div>
+            <div class="t-card__body">
+              <span class="t-card__index" aria-hidden="true">03</span>
+              <h3 class="t-card__title" id="t3-title"><a class="t-card__link" href={tpath("laser-resurfacing")}>{t("t3.title")}</a></h3>
+              <p class="t-card__text">{t("t3.text")}</p>
+              {prices["laser-resurfacing"] && <p class="t-card__price">{u.from} {money(prices["laser-resurfacing"].from)}</p>}
+              <div class="t-card__meta">
+                <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t3.time")}</span></span>
+                <a class="link-arrow" href="#booking" data-treatment="laser-resurfacing" aria-describedby="t3-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              </div>
+            </div>
+          </li>
+          <li class="t-card reveal" style="--d:1">
+            <div class="t-card__media media"><Pic local="quadro-laser" fallback="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Quadro laser hair removal at ByDee" /></div>
+            <div class="t-card__body">
+              <span class="t-card__index" aria-hidden="true">04</span>
+              <h3 class="t-card__title" id="t5-title"><a class="t-card__link" href={tpath("laser-hair-removal")}>{t("t5.title")}</a></h3>
+              <p class="t-card__text">{t("t5.text")}</p>
+              {prices["laser-hair-removal"] && <p class="t-card__price">{u.from} {money(prices["laser-hair-removal"].from)}</p>}
+              <div class="t-card__meta">
+                <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t5.time")}</span></span>
+                <a class="link-arrow" href="#booking" data-treatment="hair-removal" aria-describedby="t5-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              </div>
+            </div>
+          </li>
+          <li class="t-card reveal" style="--d:2">
+            <div class="t-card__media media"><Pic local="anti-wrinkle" fallback="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=70&fm=webp" width="720" height="560" loading="lazy" decoding="async" alt="Anti-wrinkle treatment at ByDee" /></div>
+            <div class="t-card__body">
+              <span class="t-card__index" aria-hidden="true">05</span>
+              <h3 class="t-card__title" id="t6-title"><a class="t-card__link" href={tpath("anti-wrinkle")}>{t("t6.title")}</a></h3>
+              <p class="t-card__text">{t("t6.text")}</p>
+              {prices["anti-wrinkle"] && <p class="t-card__price">{u.from} {money(prices["anti-wrinkle"].from)}</p>}
+              <div class="t-card__meta">
+                <span class="t-card__time"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("t6.time")}</span></span>
+                <a class="link-arrow" href="#booking" data-treatment="anti-wrinkle" aria-describedby="t6-title"><span>{t("treat.book")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         5. BEFORE / AFTER
+         ========================================================= -->
+    <Results lang={lang} />
+
+    <!-- =========================================================
+         6. WHY CHOOSE US
+         ========================================================= -->
+    <section class="section section--dark why" id="why" aria-labelledby="why-title">
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow reveal">{t("why.eyebrow")}</p>
+          <h2 class="h2 reveal" id="why-title">{t("why.title")}</h2>
+        </header>
+
+        <!-- Counters: edit data-count / data-suffix and the matching sr-only text -->
+        <!-- HIDDEN until real figures are confirmed -->
+        <dl class="stats" hidden>
+          <div class="stat reveal"><dt>{t("why.s1")}</dt><dd><span class="stat__num" data-count="3" data-suffix="+" aria-hidden="true">3+</span><span class="sr-only">3+</span></dd></div>
+          <div class="stat reveal" style="--d:1"><dt>{t("why.s2")}</dt><dd><span class="stat__num" data-count="8000" data-suffix="+" aria-hidden="true">8,000+</span><span class="sr-only">8,000+</span></dd></div>
+          <div class="stat reveal" style="--d:2"><dt>{t("why.s3")}</dt><dd><span class="stat__num" data-count="25000" data-suffix="+" aria-hidden="true">25,000+</span><span class="sr-only">25,000+</span></dd></div>
+          <div class="stat reveal" style="--d:3"><dt>{t("why.s4")}</dt><dd><span class="stat__num" data-count="98" data-suffix="%" aria-hidden="true">98%</span><span class="sr-only">98%</span></dd></div>
+        </dl>
+
+        <ul class="reasons" role="list">
+          <li class="reason reveal"><h3 class="reason__title">{t("why.r1t")}</h3><p>{t("why.r1")}</p></li>
+          <li class="reason reveal" style="--d:1"><h3 class="reason__title">{t("why.r2t")}</h3><p>{t("why.r2")}</p></li>
+          <li class="reason reveal" style="--d:2"><h3 class="reason__title">{t("why.r3t")}</h3><p>{t("why.r3")}</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         7. TESTIMONIALS  (replace with REAL reviews before launch)
+         ========================================================= -->
+    <Reviews lang={lang} />
+
+    <Faq lang={lang} />
+
+    <!-- =========================================================
+         8. BOOKING
+         ========================================================= -->
+    <section class="section section--tint booking" id="booking" aria-labelledby="booking-title">
+      <div class="container booking__grid">
+        <div class="booking__intro">
+          <p class="eyebrow reveal">{t("booking.eyebrow")}</p>
+          <h2 class="h2 reveal" id="booking-title">{t("booking.title")}</h2>
+          <p class="reveal">{t("booking.lead")}</p>
+          {site.bookingUrl && <a class="btn btn--primary btn--lg reveal" href={site.bookingUrl} target="_blank" rel="noopener"><span>{t("booking.online")}</span></a>}
+          <a class="btn btn--wa btn--lg reveal js-wa" href={waUrl} target="_blank" rel="noopener">
+            <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+            <span>{t("cta.whatsapp")}</span>
+          </a>
+          <ul class="booking__facts reveal" role="list">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("booking.f1")}</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>{t("booking.f2")}</span></li>
+          </ul>
+        </div>
+
+        <!-- Netlify Forms ready: set CONFIG.formMode = 'netlify' in js/main.js once deployed on Netlify -->
+        <form class="form reveal" id="booking-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="company" novalidate>
+          <input type="hidden" name="form-name" value="booking">
+          <p class="form__hp" aria-hidden="true"><label>Company <input name="company" tabindex="-1" autocomplete="off"></label></p>
+
+          <div class="field">
+            <label class="field__label" for="f-name">{t("form.name")}</label>
+            <input class="field__input" id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="err-name">
+            <p class="field__error" id="err-name" aria-live="polite"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="f-phone">{t("form.phone")}</label>
+            <input class="field__input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+961 70 000 000" aria-describedby="err-phone" dir="ltr">
+            <p class="field__error" id="err-phone" aria-live="polite"></p>
+          </div>
+          <div class="form__row">
+            <div class="field">
+              <label class="field__label" for="f-treatment">{t("form.treatment")}</label>
+              <select class="field__input field__select" id="f-treatment" name="treatment" required aria-describedby="err-treatment">
+                <option value="">{t("form.choose")}</option>
+                <option value="consultation">{t("form.consult")}</option>
+                <option value="facial">{t("t1.title")}</option>
+                <option value="rejuvenation">{t("t2.title")}</option>
+                <option value="laser-resurfacing">{t("t3.title")}</option>
+                <option value="hair-removal">{t("t5.title")}</option>
+                <option value="anti-wrinkle">{t("t6.title")}</option>
+                <option value="unsure">{t("form.unsure")}</option>
+              </select>
+              <p class="field__error" id="err-treatment" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-date">{t("form.date")}</label>
+              <input class="field__input" id="f-date" name="date" type="date" required aria-describedby="err-date">
+              <p class="field__error" id="err-date" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="f-message"><span>{t("form.message")}</span> <span class="field__opt">{t("form.optional")}</span></label>
+            <textarea class="field__input" id="f-message" name="message" rows="3"></textarea>
+          </div>
+
+          <button class="btn btn--primary btn--lg btn--block" type="submit">
+            <span>{t("form.submit")}</span>
+            <svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </button>
+          <p class="form__privacy">{t("form.privacy")}</p>
+          <p class="form__status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         9. CONTACT
+         ========================================================= -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="container contact__grid">
+        <div class="contact__info">
+          <p class="eyebrow reveal">{t("contact.eyebrow")}</p>
+          <h2 class="h2 reveal" id="contact-title"><span>{t("contact.title")}</span> {t("city.beirut")}.</h2>
+          <dl class="contact__list reveal">
+            <div><dt><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span>{t("contact.address")}</span></dt><dd>{t("contact.addr")}</dd></div>
+            <div><dt><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>{t("contact.phone")}</span></dt><dd><a href="tel:+96181126500" dir="ltr">+961 81 126 500</a></dd></div>
+            <div><dt><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("contact.hours")}</span></dt>
+              <dd>
+                <span class="hours"><span>{t("contact.h1")}</span><span dir="ltr">09:00 – 19:00</span></span>
+                <span class="hours"><span>{t("contact.h2")}</span><span dir="ltr">10:00 – 16:00</span></span>
+                <span class="hours"><span>{t("contact.h3")}</span><span>{t("contact.closed")}</span></span>
+              </dd></div>
+          </dl>
+          <ul class="socials reveal" role="list">
+            <li><a class="icon-btn icon-btn--line" href="https://instagram.com/bydee961" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg></a></li>
+            <li><a class="icon-btn icon-btn--line js-wa" href={waUrl} target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg></a></li>
+          </ul>
+          {site.googleReviewUrl && <p class="reveal"><a class="link-arrow" href={site.googleReviewUrl} target="_blank" rel="noopener"><span>{t("contact.review")}</span></a></p>}
+        </div>
+
+        <!-- Click-to-load map: keeps Lighthouse Performance high and avoids third-party cookies until asked.
+             Replace data-src with your Google Maps "Embed a map" URL. -->
+        <div class="map reveal" data-src="https://maps.google.com/maps?q=Barbir%2C%20Beirut%2C%20Lebanon&z=14&output=embed">
+          <div class="map__placeholder" aria-hidden="true"></div>
+          <button class="btn btn--ghost map__btn js-map-load" type="button">
+            <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span>{t("map.load")}</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       10. FOOTER
+       ========================================================= -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a class="logo logo--footer" href="#top" aria-label="ByDee, back to top">
+        <span class="logo__mark" aria-hidden="true">D</span>
+        <span class="logo__text">ByDee<small>{t("logo.sub")}</small></span>
+      </a>
+      <nav aria-label="Footer">
+        <ul class="footer__nav" role="list">
+          <li><a href="#treatments">{t("nav.treatments")}</a></li>
+          <li hidden={!hasResults}><a href="#results">{t("nav.results")}</a></li>
+          <li><a href="#booking">{t("cta.book")}</a></li>
+          <li><a href="#contact">{t("nav.contact")}</a></li>
+        </ul>
+      </nav>
+      <ul class="footer__legal-nav" role="list"><li><a href={`${prefix}/privacy/`}>{t("legal.privacy")}</a></li><li><a href={`${prefix}/terms/`}>{t("legal.terms")}</a></li><li><a href={`${prefix}/medical-disclaimer/`}>{t("legal.disclaimer")}</a></li></ul>
+      {Boolean(site.analytics.ga4Id || site.analytics.metaPixelId) && <button class="js-cookie-settings footer__cookie" type="button">{t("cookie.settings")}</button>}
+      <p class="footer__legal">© <span class="js-year">{new Date().getFullYear()}</span> ByDee. <span>{t("footer.rights")}</span></p>
+    </div>
+  </footer>
+
+  <!-- Mobile booking bar: keeps a booking CTA on every screen (WhatsApp = 2 taps to book) -->
+  <div class="mbar" id="mbar">
+    <a class="btn btn--wa js-wa" href={waUrl} target="_blank" rel="noopener">
+      <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg><span>WhatsApp</span>
+    </a>
+    <a class="btn btn--primary" href="#booking"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>{t("cta.book")}</span></a>
+  </div>

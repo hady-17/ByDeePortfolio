@@ -1,0 +1,19 @@
+---
+import site from '../../site.config.mjs';
+import { makeT, localePath, type Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = makeT(lang);
+const analyticsOn = Boolean(site.analytics.ga4Id || site.analytics.metaPixelId);
+---
+<footer class="footer">
+  <div class="container footer__inner">
+    <ul class="footer__legal-nav" role="list">
+      <li><a href={localePath(lang, '/privacy/')}>{t('legal.privacy')}</a></li>
+      <li><a href={localePath(lang, '/terms/')}>{t('legal.terms')}</a></li>
+      <li><a href={localePath(lang, '/medical-disclaimer/')}>{t('legal.disclaimer')}</a></li>
+      {analyticsOn && <li><button class="js-cookie-settings footer__cookie" type="button">{t('cookie.settings')}</button></li>}
+    </ul>
+    <p class="footer__legal">© {new Date().getFullYear()} ByDee. {t('footer.rights')}</p>
+  </div>
+</footer>

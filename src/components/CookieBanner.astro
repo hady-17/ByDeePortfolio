@@ -1,0 +1,17 @@
+---
+import site from '../../site.config.mjs';
+import { makeT, type Lang } from '../i18n';
+const { lang } = Astro.props as { lang: Lang };
+const t = makeT(lang);
+const enabled = Boolean(site.analytics.ga4Id || site.analytics.metaPixelId);
+---
+{enabled && (
+  <div class="cookie" id="cookie-banner" role="dialog" aria-labelledby="cookie-title" hidden>
+    <p class="cookie__title" id="cookie-title">{t('cookie.title')}</p>
+    <p class="cookie__text">{t('cookie.text')} <a href={lang === 'ar' ? '/ar/privacy/' : '/privacy/'}>{t('legal.privacy')}</a></p>
+    <div class="cookie__actions">
+      <button class="btn btn--ghost btn--sm" type="button" data-consent="denied">{t('cookie.decline')}</button>
+      <button class="btn btn--primary btn--sm" type="button" data-consent="granted">{t('cookie.accept')}</button>
+    </div>
+  </div>
+)}

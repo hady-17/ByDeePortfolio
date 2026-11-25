@@ -14,6 +14,8 @@
 <body>
   <script>
     import CMS from '@sveltia/cms';
+    // "Help" in the admin toolbar opens the owner's guide (src/pages/admin/help.astro)
+    CMS.registerCustomPage({ id: 'help', label: 'Help', icon: 'help', url: '/admin/help/' });
     CMS.init();
   </script>
 </body>

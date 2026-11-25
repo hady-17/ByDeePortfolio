@@ -1,10 +1,12 @@
-# Admin area configuration (Sveltia CMS). See ADMIN.md for how the clinic owner signs in.
-# Every save is a commit to the main branch; Vercel then rebuilds the site (about a minute).
+# ByDee admin area (Sveltia CMS). Setup guide: ADMIN.md. In-app guide: /admin/help/
+# Every save is a commit to the main branch; Vercel then rebuilds the site (about 1 to 2 minutes).
 
 backend:
   name: github
   repo: hady-17/ByDeePortfolio
   branch: main
+  # Only token sign-in: the "Sign in with GitHub" button needs an OAuth service (see ADMIN.md).
+  auth_methods: [token]
   commit_messages:
     create: "Admin: add {{collection}} \"{{slug}}\""
     update: "Admin: update {{collection}} \"{{slug}}\""
@@ -12,10 +14,17 @@ backend:
     uploadMedia: "Admin: upload {{path}}"
     deleteMedia: "Admin: delete {{path}}"
 
+app_title: ByDee admin
+logo:
+  src: /icon-192.png
 site_url: https://bydee961.vercel.app
 display_url: https://bydee961.vercel.app
 
-# Uploaded photos are stored in the repo and optimised at build time.
+# The preview pane is not useful for these simple forms. The journal turns it back on.
+editor:
+  preview: false
+
+# Uploaded photos are stored with the site and resized automatically.
 media_folder: src/assets/uploads
 public_folder: /src/assets/uploads
 
@@ -24,238 +33,281 @@ i18n:
   locales: [en, ar]
   default_locale: en
 
-collections:
-  # ---------------------------------------------------------------- Offers & promotions
-  - name: promotions
-    label: Offers & promotions
+singletons:
+  # ------------------------------------------------------------------ PROMOTIONS
+  - name: offers
+    label: Offers
     icon: sell
-    files:
-      - name: promotions
-        label: Offers, gift cards, referral
-        file: src/cms/promotions.json
+    file: src/cms/offers.json
+    fields:
+      - name: offers
+        label: Current offers
+        label_singular: offer
+        hint: Shown on the home page. Each offer disappears by itself after its last day.
+        widget: list
+        required: false
+        collapsed: true
+        summary: "{{fields.title.en}}"
         fields:
-          - name: offers
-            label: Offers
-            label_singular: Offer
-            hint: Shown on the home page. An offer disappears automatically after its end date.
-            widget: list
+          - name: title
+            label: Offer title
+            widget: object
+            hint: "Example: Summer-ready laser"
+            fields:
+              - { name: en, label: English, widget: string }
+              - { name: ar, label: Arabic (العربية), widget: string, required: false }
+          - name: text
+            label: Details
+            widget: object
+            hint: "Example: 20% off full-leg packages booked before 31 March."
+            fields:
+              - { name: en, label: English, widget: text }
+              - { name: ar, label: Arabic (العربية), widget: text, required: false }
+          - name: treatment
+            label: Which treatment is it for?
+            hint: Optional. The offer's Book button then preselects this treatment.
+            widget: select
             required: false
-            summary: "{{fields.title.en}}"
-            fields:
-              - name: title
-                label: Title
-                widget: object
-                fields:
-                  - { name: en, label: English, widget: string }
-                  - { name: ar, label: Arabic, widget: string, required: false }
-              - name: text
-                label: Description
-                widget: object
-                fields:
-                  - { name: en, label: English, widget: text }
-                  - { name: ar, label: Arabic, widget: text, required: false }
-              - name: treatment
-                label: Related treatment
-                hint: The offer's Book button preselects this treatment.
-                widget: select
-                required: false
-                options: &treatments
-                  - { label: Signature Facial, value: signature-facial }
-                  - { label: Skin Rejuvenation, value: skin-rejuvenation }
-                  - { label: Laser Resurfacing, value: laser-resurfacing }
-                  - { label: Quadro Laser (hair removal), value: laser-hair-removal }
-                  - { label: Anti-Wrinkle, value: anti-wrinkle }
-              - name: until
-                label: Last day of the offer
-                widget: datetime
-                required: false
-                time_format: false
-                format: YYYY-MM-DD
-          - name: giftCards
-            label: Gift cards
-            widget: object
-            hint: Clients order gift cards on WhatsApp. Leave the amounts empty to hide the section.
-            fields:
-              - name: amounts
-                label: Amounts (US dollars)
-                widget: list
-                required: false
-                field: { name: amount, label: Amount, widget: number, value_type: int, min: 1 }
-              - name: note
-                label: Extra line (optional)
-                widget: object
-                required: false
-                fields:
-                  - { name: en, label: English, widget: string, required: false }
-                  - { name: ar, label: Arabic, widget: string, required: false }
-          - name: referral
-            label: Refer a friend
-            widget: object
-            fields:
-              - { name: enabled, label: Show in the booking section, widget: boolean, default: false }
-              - name: text
-                label: Reward description
-                widget: object
-                required: false
-                fields:
-                  - { name: en, label: English, widget: string, required: false }
-                  - { name: ar, label: Arabic, widget: string, required: false }
-          - name: broadcastOptIn
-            label: Show "Get offers on WhatsApp" link in the footer
-            hint: Only switch on if you send a WhatsApp broadcast list.
-            widget: boolean
-            default: false
+            options: &treatments
+              - { label: Signature Facial, value: signature-facial }
+              - { label: Skin Rejuvenation, value: skin-rejuvenation }
+              - { label: Laser Resurfacing, value: laser-resurfacing }
+              - { label: Quadro Laser (hair removal), value: laser-hair-removal }
+              - { label: Anti-Wrinkle, value: anti-wrinkle }
+          - name: until
+            label: Last day of the offer
+            hint: Optional. Leave empty if the offer has no end date.
+            widget: datetime
+            required: false
+            time_format: false
+            format: YYYY-MM-DD
+      - name: broadcastOptIn
+        label: Show a "Get offers on WhatsApp" link at the bottom of the site
+        hint: Only switch this on if you send offers to a WhatsApp broadcast list.
+        widget: boolean
+        default: false
 
-  # ---------------------------------------------------------------- Prices
+  - name: gift-cards
+    label: Gift cards
+    icon: redeem
+    file: src/cms/gift-cards.json
+    fields:
+      - name: amounts
+        label: Gift card amounts in US dollars
+        label_singular: amount
+        hint: Add one amount per line, for example 50, 100 and 150. Clients order on WhatsApp. Remove all amounts to hide gift cards.
+        widget: list
+        required: false
+        field: { name: amount, label: Amount ($), widget: number, value_type: int, min: 1 }
+      - name: note
+        label: Extra line under the gift cards
+        hint: "Optional. Example: Valid for 12 months on any treatment."
+        widget: object
+        fields:
+          - { name: en, label: English, widget: string, required: false }
+          - { name: ar, label: Arabic (العربية), widget: string, required: false }
+
+  - name: referral
+    label: Refer a friend
+    icon: group_add
+    file: src/cms/referral.json
+    fields:
+      - name: enabled
+        label: Show the refer-a-friend message in the booking section
+        widget: boolean
+        default: false
+      - name: text
+        label: What do clients get?
+        hint: "Example: Refer a friend and you both get 10% off your next visit."
+        widget: object
+        fields:
+          - { name: en, label: English, widget: string, required: false }
+          - { name: ar, label: Arabic (العربية), widget: string, required: false }
+
+  - divider: true
+
+  # ------------------------------------------------------------------ CONTENT
   - name: prices
-    label: Prices & packages
+    label: Prices
     icon: payments
-    files:
+    file: src/cms/prices.json
+    fields:
       - name: prices
-        label: Prices & packages
-        file: src/cms/prices.json
+        label: Starting prices
+        label_singular: price
+        hint: 'Shown as "From $X" on the treatment cards and pages. Add one per treatment.'
+        widget: list
+        required: false
+        collapsed: true
+        summary: "{{fields.treatment}}: from ${{fields.from}}"
         fields:
-          - name: prices
-            label: Starting prices
-            label_singular: Price
-            hint: Shown as "From $X" on the treatment cards and pages. One row per treatment.
-            widget: list
-            required: false
-            summary: "{{fields.treatment}}: ${{fields.from}}"
+          - { name: treatment, label: Treatment, widget: select, options: *treatments }
+          - { name: from, label: Starting price ($), widget: number, value_type: int, min: 1 }
+          - name: note
+            label: Small note after the price
+            hint: "Optional. Example: per session"
+            widget: object
             fields:
-              - { name: treatment, label: Treatment, widget: select, options: *treatments }
-              - { name: from, label: From (US dollars), widget: number, value_type: int, min: 1 }
-              - name: note
-                label: Note (optional, e.g. "per session")
-                widget: object
-                required: false
-                fields:
-                  - { name: en, label: English, widget: string, required: false }
-                  - { name: ar, label: Arabic, widget: string, required: false }
-          - name: packages
-            label: Packages
-            label_singular: Package
-            hint: Shown on the treatment page.
-            widget: list
-            required: false
-            summary: "{{fields.name.en}}"
+              - { name: en, label: English, widget: string, required: false }
+              - { name: ar, label: Arabic (العربية), widget: string, required: false }
+      - name: packages
+        label: Packages
+        label_singular: package
+        hint: Shown on the treatment's own page.
+        widget: list
+        required: false
+        collapsed: true
+        summary: "{{fields.name.en}}: ${{fields.price}}"
+        fields:
+          - { name: treatment, label: Treatment, widget: select, options: *treatments }
+          - name: name
+            label: Package name
+            hint: "Example: Full legs, 6 sessions"
+            widget: object
             fields:
-              - { name: treatment, label: Treatment, widget: select, options: *treatments }
-              - name: name
-                label: Package name
-                widget: object
-                fields:
-                  - { name: en, label: English, widget: string }
-                  - { name: ar, label: Arabic, widget: string, required: false }
-              - { name: price, label: Price (US dollars), widget: number, value_type: int, min: 1 }
-              - name: includes
-                label: What it includes
-                widget: object
-                fields:
-                  - { name: en, label: English, widget: string, required: false }
-                  - { name: ar, label: Arabic, widget: string, required: false }
+              - { name: en, label: English, widget: string }
+              - { name: ar, label: Arabic (العربية), widget: string, required: false }
+          - { name: price, label: Package price ($), widget: number, value_type: int, min: 1 }
+          - name: includes
+            label: What is included
+            hint: "Optional. Example: Six sessions, consultation included"
+            widget: object
+            fields:
+              - { name: en, label: English, widget: string, required: false }
+              - { name: ar, label: Arabic (العربية), widget: string, required: false }
 
-  # ---------------------------------------------------------------- Photos
   - name: photos
-    label: Photos
+    label: Website photos
     icon: photo_library
-    files:
-      - name: images
-        label: Website photos
-        file: src/cms/images.json
-        fields:
-          - { name: home-hero, label: Home page main photo, widget: image, required: false, hint: 'Replace any photo on the site. Leave a slot empty to keep the current photo.' }
-          - { name: deena-profile, label: Deena's portrait (About section), widget: image, required: false }
-          - { name: signature-facial, label: Signature Facial, widget: image, required: false }
-          - { name: skin-rejuvenation, label: Skin Rejuvenation, widget: image, required: false }
-          - { name: laser-resurfacing, label: Laser Resurfacing, widget: image, required: false }
-          - { name: quadro-laser, label: Quadro Laser, widget: image, required: false }
-          - { name: anti-wrinkle, label: Anti-Wrinkle, widget: image, required: false }
+    file: src/cms/images.json
+    fields:
+      - { name: home-hero, label: Home page main photo, widget: image, required: false, hint: "Tall photo works best. Leave any photo empty to keep the current one." }
+      - { name: deena-profile, label: Deena's portrait, widget: image, required: false, hint: "Shown in the About section. Tall photo works best." }
+      - { name: signature-facial, label: Signature Facial photo, widget: image, required: false }
+      - { name: skin-rejuvenation, label: Skin Rejuvenation photo, widget: image, required: false }
+      - { name: laser-resurfacing, label: Laser Resurfacing photo, widget: image, required: false }
+      - { name: quadro-laser, label: Quadro Laser photo, widget: image, required: false }
+      - { name: anti-wrinkle, label: Anti-Wrinkle photo, widget: image, required: false }
 
-  # ---------------------------------------------------------------- Before / after
   - name: results
     label: Before & after
     icon: compare
-    files:
+    file: src/cms/results.json
+    fields:
       - name: results
-        label: Before & after cases
-        file: src/cms/results.json
+        label: Before and after cases
+        label_singular: case
+        hint: Only add photos the client agreed in writing to publish. Use the same angle and lighting for both photos.
+        widget: list
+        required: false
+        collapsed: true
+        summary: "{{fields.caption.en}} ({{fields.sessions}} sessions)"
+        thumbnail: after
         fields:
-          - name: results
-            label: Cases
-            label_singular: Case
-            hint: Only add photos the client agreed in writing to publish.
-            widget: list
-            required: false
-            summary: "{{fields.treatment}} ({{fields.sessions}} sessions)"
+          - { name: treatment, label: Treatment, widget: select, options: *treatments }
+          - { name: before, label: Before photo, widget: image }
+          - { name: after, label: After photo, widget: image }
+          - { name: sessions, label: Number of sessions, widget: number, value_type: int, min: 1, default: 1 }
+          - name: caption
+            label: Caption
+            hint: "Example: Laser resurfacing"
+            widget: object
             fields:
-              - { name: treatment, label: Treatment, widget: select, options: *treatments }
-              - { name: before, label: Before photo, widget: image }
-              - { name: after, label: After photo, widget: image }
-              - { name: sessions, label: Number of sessions, widget: number, value_type: int, min: 1, default: 1 }
-              - name: caption
-                label: Caption
-                widget: object
-                fields:
-                  - { name: en, label: English, widget: string }
-                  - { name: ar, label: Arabic, widget: string, required: false }
-              - { name: consent, label: The client gave written consent to publish these photos, widget: boolean, default: false }
+              - { name: en, label: English, widget: string }
+              - { name: ar, label: Arabic (العربية), widget: string, required: false }
+          - { name: consent, label: The client gave written consent to publish these photos, widget: boolean, default: false, hint: "The case only appears on the site when this is switched on." }
 
-  # ---------------------------------------------------------------- Reviews
   - name: reviews
     label: Reviews
     icon: reviews
-    files:
+    file: src/cms/reviews.json
+    fields:
       - name: reviews
         label: Client reviews
-        file: src/cms/reviews.json
+        label_singular: review
+        hint: Only publish reviews the client agreed to share, exactly as they wrote them.
+        widget: list
+        required: false
+        collapsed: true
+        summary: "{{fields.name}}"
         fields:
-          - name: reviews
-            label: Reviews
-            label_singular: Review
-            hint: Only publish reviews the client agreed to share, word for word.
-            widget: list
-            required: false
-            summary: "{{fields.name}}"
-            fields:
-              - { name: name, label: 'Client name as they agreed, e.g. "Rima H."', widget: string }
-              - { name: treatment, label: Treatment, widget: select, options: *treatments }
-              - { name: lang, label: Language of the review, widget: select, default: en, options: [{ label: English, value: en }, { label: Arabic, value: ar }] }
-              - { name: text, label: Review, widget: text }
+          - { name: name, label: Client name, widget: string, hint: 'As the client agreed, for example "Rima H."' }
+          - { name: treatment, label: Treatment, widget: select, options: *treatments }
+          - { name: lang, label: Language of the review, widget: select, default: en, options: [{ label: English, value: en }, { label: Arabic (العربية), value: ar }] }
+          - { name: text, label: Review, widget: text }
 
-  # ---------------------------------------------------------------- FAQ
   - name: faq
     label: FAQ
     icon: help
-    files:
-      - name: faq
-        label: Frequently asked questions
-        file: src/cms/faq.json
+    file: src/cms/faq.json
+    fields:
+      - name: items
+        label: Questions and answers
+        label_singular: question
+        hint: Shown on the home page. Drag questions to change their order.
+        widget: list
+        collapsed: true
+        summary: "{{fields.q.en}}"
         fields:
-          - name: items
-            label: Questions
-            label_singular: Question
-            widget: list
-            summary: "{{fields.q.en}}"
+          - name: q
+            label: Question
+            widget: object
             fields:
-              - name: q
-                label: Question
-                widget: object
-                fields:
-                  - { name: en, label: English, widget: string }
-                  - { name: ar, label: Arabic, widget: string, required: false }
-              - name: a
-                label: Answer
-                widget: object
-                fields:
-                  - { name: en, label: English, widget: text }
-                  - { name: ar, label: Arabic, widget: text, required: false }
+              - { name: en, label: English, widget: string }
+              - { name: ar, label: Arabic (العربية), widget: string, required: false }
+          - name: a
+            label: Answer
+            widget: object
+            fields:
+              - { name: en, label: English, widget: text }
+              - { name: ar, label: Arabic (العربية), widget: text, required: false }
 
-  # ---------------------------------------------------------------- Journal
+  - divider: true
+
+  # ------------------------------------------------------------------ SETTINGS
+  - name: contact
+    label: Contact details
+    icon: contact_phone
+    file: src/cms/contact.json
+    fields:
+      - { name: whatsapp, label: WhatsApp number, widget: string, hint: "Digits only, with the country code. Example: 96181126500", pattern: ['^[0-9]{8,15}$', 'Use digits only, for example 96181126500'] }
+      - { name: phone, label: Phone number for calling, widget: string, hint: "Example: +96181126500" }
+      - { name: phoneDisplay, label: Phone number as shown on the site, widget: string, hint: "Example: +961 81 126 500" }
+      - { name: email, label: Email address, widget: string, required: false }
+      - { name: instagram, label: Instagram page link, widget: string, required: false, hint: "Example: https://instagram.com/bydee961" }
+      - { name: bookingUrl, label: Online booking link, widget: string, required: false, hint: "Optional. A Fresha, Setmore or similar booking page. Adds a Book online button." }
+      - { name: googleReviewUrl, label: Google review link, widget: string, required: false, hint: "Optional. Your Google 'Ask for reviews' link. Adds a Leave a Google review link." }
+
+  - name: advanced
+    label: Advanced settings
+    icon: tune
+    file: src/cms/advanced.json
+    fields:
+      - { name: url, label: Website address, widget: string, hint: "Only change this when a new domain is connected in Vercel." }
+      - { name: name, label: Clinic name, widget: string }
+      - { name: googleBusinessUrl, label: Google Business Profile link, widget: string, required: false }
+      - name: geo
+        label: Exact map location
+        hint: "Optional. In Google Maps, right-click the clinic and click the numbers to copy them. Example: 33.8869, 35.4955"
+        widget: object
+        fields:
+          - { name: lat, label: Latitude (first number), widget: number, value_type: float, required: false }
+          - { name: lng, label: Longitude (second number), widget: number, value_type: float, required: false }
+      - name: analytics
+        label: Visitor statistics
+        hint: Optional. When an ID is added, the site asks visitors for cookie consent before measuring visits.
+        widget: object
+        fields:
+          - { name: ga4Id, label: Google Analytics ID, widget: string, required: false, hint: "Starts with G-" }
+          - { name: metaPixelId, label: Meta (Facebook/Instagram) Pixel ID, widget: string, required: false }
+      - { name: lastUpdated, label: Date the legal pages were last updated, widget: datetime, time_format: false, format: YYYY-MM-DD }
+
+collections:
   - name: journal
     label: Journal
-    label_singular: Article
+    label_singular: article
     icon: article
+    description: Articles for the Skin journal, in English and Arabic.
     folder: src/content/journal
     extension: md
     format: frontmatter
@@ -265,45 +317,12 @@ collections:
     i18n: true
     summary: "{{title}}"
     sortable_fields: [date, title]
+    editor:
+      preview: true
     fields:
       - { name: title, label: Title, widget: string, i18n: true }
-      - { name: description, label: Short description, widget: text, i18n: true }
+      - { name: description, label: Short summary, widget: text, i18n: true, hint: "One or two sentences. Shown in the article list and in Google results." }
       - { name: date, label: Date, widget: datetime, time_format: false, format: YYYY-MM-DD, i18n: duplicate }
-      - { name: treatment, label: Related treatment, widget: select, required: false, options: *treatments, i18n: duplicate }
-      - { name: draft, label: Hide (draft), widget: boolean, default: false, required: false, i18n: duplicate }
+      - { name: treatment, label: Related treatment, widget: select, required: false, options: *treatments, i18n: duplicate, hint: "Optional. Adds a link to that treatment at the end." }
+      - { name: draft, label: Hide this article from the site, widget: boolean, default: false, required: false, i18n: duplicate }
       - { name: body, label: Article, widget: markdown, i18n: true }
-
-  # ---------------------------------------------------------------- Settings
-  - name: settings
-    label: Settings
-    icon: settings
-    files:
-      - name: settings
-        label: Contact, links & tracking
-        file: src/cms/settings.json
-        fields:
-          - { name: url, label: Website address, widget: string, hint: Change only when the custom domain is live. }
-          - { name: name, label: Clinic name, widget: string }
-          - { name: whatsapp, label: 'WhatsApp number (digits only, with country code)', widget: string, pattern: ['^[0-9]{8,15}$', 'Digits only, e.g. 96181126500'] }
-          - { name: phone, label: 'Phone for calling, e.g. +96181126500', widget: string }
-          - { name: phoneDisplay, label: Phone as shown on the site, widget: string }
-          - { name: instagram, label: Instagram link, widget: string, required: false }
-          - { name: email, label: Email, widget: string, required: false }
-          - { name: bookingUrl, label: 'Online booking link (Fresha, Setmore...)', widget: string, required: false }
-          - { name: googleBusinessUrl, label: Google Business Profile link, widget: string, required: false }
-          - { name: googleReviewUrl, label: Google "write a review" link, widget: string, required: false }
-          - name: geo
-            label: Map pin
-            widget: object
-            required: false
-            fields:
-              - { name: lat, label: Latitude, widget: number, value_type: float, required: false }
-              - { name: lng, label: Longitude, widget: number, value_type: float, required: false }
-          - name: analytics
-            label: Analytics (cookie banner appears when set)
-            widget: object
-            required: false
-            fields:
-              - { name: ga4Id, label: Google Analytics ID (G-...), widget: string, required: false }
-              - { name: metaPixelId, label: Meta Pixel ID, widget: string, required: false }
-          - { name: lastUpdated, label: Legal pages last updated, widget: datetime, time_format: false, format: YYYY-MM-DD }

@@ -18,8 +18,8 @@ npm run preview   # serve dist/ locally
 ## Structure
 
 ```
-site.config.mjs        # reads src/cms/settings.json (domain, phone, WhatsApp, analytics, links)
-src/cms/*.json         # owner-editable data: settings, photos, offers, prices, reviews, results, FAQ
+site.config.mjs        # reads src/cms/contact.json and advanced.json
+src/cms/*.json         # owner-editable data: contact, advanced, photos, offers, gift cards, referral, prices, reviews, results, FAQ
 public/admin/config.yml   # admin area (/admin/) configuration, see ADMIN.md
 src/pages/             # / and /ar/ (home), /treatments/<slug>/, /skin-quiz/, /journal/, legal pages (+ /ar/ copies)
 src/components/Home.astro   # the home page markup (used for both languages)

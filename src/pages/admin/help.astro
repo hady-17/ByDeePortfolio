@@ -1,0 +1,99 @@
+---
+// In-app help for the clinic owner, shown inside the admin area ("Help" in the toolbar).
+const sections = [
+  {
+    en: { h: 'How saving works', p: ['Make your changes and press Save at the top right.', 'The website updates by itself after about 1 to 2 minutes. Refresh the website to see it.', 'Every change is kept, so nothing is ever lost. If something goes wrong, the developer can bring back any earlier version.'] },
+    ar: { h: 'كيف يعمل الحفظ', p: ['أجري تعديلاتك ثم اضغطي «Save» في أعلى اليمين.', 'يتحدّث الموقع تلقائياً بعد دقيقة إلى دقيقتين تقريباً. حدّثي صفحة الموقع لتري التغيير.', 'يُحفظ كل تغيير، فلا يضيع شيء. وإن حدث خطأ، يستطيع المطوّر استرجاع أي نسخة سابقة.'] }
+  },
+  {
+    en: { h: 'Add an offer', p: ['Open Offers, then Add offer.', 'Write the title and details in English and Arabic.', 'Choose the treatment and the last day if there is one. The offer disappears by itself after that day.', 'Press Save.'] },
+    ar: { h: 'إضافة عرض', p: ['افتحي «Offers» ثم «Add offer».', 'اكتبي العنوان والتفاصيل بالإنجليزية والعربية.', 'اختاري العلاج وآخر يوم للعرض إن وُجد. يختفي العرض تلقائياً بعد ذلك اليوم.', 'اضغطي «Save».'] }
+  },
+  {
+    en: { h: 'Change a photo', p: ['Open Website photos and click the photo you want to replace.', 'Upload a new photo from your phone or computer. JPG or PNG, under about 5 MB.', 'The site resizes the photo automatically. To go back to the old photo, remove the new one and save.'] },
+    ar: { h: 'تغيير صورة', p: ['افتحي «Website photos» واضغطي على الصورة التي تريدين تبديلها.', 'حمّلي صورة جديدة من هاتفك أو حاسوبك. بصيغة JPG أو PNG وبحجم أقل من 5 ميغابايت تقريباً.', 'يصغّر الموقع الصورة تلقائياً. للعودة إلى الصورة القديمة، احذفي الجديدة ثم احفظي.'] }
+  },
+  {
+    en: { h: 'Before & after photos and reviews', p: ['Only publish photos and reviews the client agreed to share, ideally in writing.', 'A before and after case only appears when "The client gave written consent" is switched on.', 'Copy reviews exactly as the client wrote them.'] },
+    ar: { h: 'صور قبل وبعد والتقييمات', p: ['لا تنشري إلا الصور والتقييمات التي وافقت العميلة على مشاركتها، ويُفضّل أن تكون الموافقة خطية.', 'لا تظهر حالة قبل وبعد إلا عند تفعيل خيار «The client gave written consent».', 'انسخي التقييم كما كتبته العميلة تماماً.'] }
+  },
+  {
+    en: { h: 'Write a journal article', p: ['Open Journal, then New article.', 'Use the English and Arabic tabs at the top to write both versions.', 'Switch on "Hide this article" to save a draft without publishing it.'] },
+    ar: { h: 'كتابة مقال في المدوّنة', p: ['افتحي «Journal» ثم «New article».', 'استعملي تبويبي English وArabic في الأعلى لكتابة النسختين.', 'فعّلي «Hide this article» لحفظ مسودة دون نشرها.'] }
+  },
+  {
+    en: { h: 'Good to know', p: ['Empty sections stay hidden on the website, so it is safe to leave anything empty.', 'Fill in the Arabic fields too. If one is empty, some places show the English text instead.', 'Treatment descriptions and page headings are not in the admin. Ask the developer to change those.', 'To use the admin in Arabic, open the account menu at the top right, then Settings, and choose the language.'] },
+    ar: { h: 'معلومات مفيدة', p: ['تبقى الأقسام الفارغة مخفية في الموقع، لذلك لا بأس بترك أي قسم فارغاً.', 'املئي الحقول العربية أيضاً. إن بقي أحدها فارغاً تظهر النسخة الإنجليزية في بعض الأماكن.', 'أوصاف العلاجات وعناوين الصفحات غير موجودة في لوحة الإدارة. اطلبي من المطوّر تغييرها.', 'لاستعمال لوحة الإدارة بالعربية، افتحي قائمة الحساب في أعلى اليمين ثم «Settings» واختاري اللغة.'] }
+  }
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Help | ByDee admin</title>
+  <style>
+    :root { color-scheme: light dark; --bg: #faf6ef; --card: #fff; --text: #1f1c19; --muted: #5d564e; --accent: #a8823f; --line: #e5ddd0; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #16181b; --card: #1f2226; --text: #eeeae3; --muted: #a9a39a; --accent: #c9a96e; --line: #33373c; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1 { font-size: 1.8rem; margin: 0 0 4px; }
+    .lead { color: var(--muted); margin: 0 0 24px; }
+    .tabs { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; margin-bottom: 24px; }
+    .tabs button { font: inherit; border: 0; background: none; color: var(--text); padding: 6px 16px; border-radius: 999px; cursor: pointer; }
+    .tabs button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+    .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+    h2 { font-size: 1.1rem; margin: 0 0 8px; color: var(--accent); }
+    ol { margin: 0; padding-inline-start: 1.2rem; }
+    li + li { margin-top: 6px; }
+    [lang="ar"] { font-family: Tahoma, "Segoe UI", system-ui, sans-serif; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="tabs" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="ar" aria-pressed="false" lang="ar">العربية</button>
+    </div>
+
+    <div data-pane="en">
+      <h1>How to use the admin</h1>
+      <p class="lead">Everything you change here appears on the website about 1 to 2 minutes after you press Save.</p>
+      <div class="grid">
+        {sections.map((s) => (
+          <section><h2>{s.en.h}</h2><ol>{s.en.p.map((p) => <li>{p}</li>)}</ol></section>
+        ))}
+      </div>
+    </div>
+
+    <div data-pane="ar" lang="ar" dir="rtl" hidden>
+      <h1>كيفية استعمال لوحة الإدارة</h1>
+      <p class="lead">كل ما تغيّرينه هنا يظهر في الموقع بعد دقيقة إلى دقيقتين تقريباً من الضغط على «Save».</p>
+      <div class="grid">
+        {sections.map((s) => (
+          <section><h2>{s.ar.h}</h2><ol>{s.ar.p.map((p) => <li>{p}</li>)}</ol></section>
+        ))}
+      </div>
+    </div>
+  </main>
+  <script is:inline>
+    (function () {
+      var btns = document.querySelectorAll('.tabs button');
+      function show(lang) {
+        btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+        document.querySelectorAll('[data-pane]').forEach(function (p) { p.hidden = p.dataset.pane !== lang; });
+        try { localStorage.setItem('admin-help-lang', lang); } catch (e) {}
+      }
+      btns.forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.lang); }); });
+      var saved = null;
+      try { saved = localStorage.getItem('admin-help-lang'); } catch (e) {}
+      if (saved === 'ar' || saved === 'en') show(saved);
+    })();
+  </script>
+</body>
+</html>

@@ -39,7 +39,7 @@ English lives at `/`, Arabic at `/ar/`. Each page has hreflang tags and both app
 
 ## Images
 
-Put photos in `src/assets/` with these names (any of jpg, jpeg, png, webp, avif). If a file is missing, a stock photo is used.
+The easiest way to change photos is the admin (Website photos). Developers can also put photos in `src/assets/` with these names (jpg, jpeg, png, webp or avif). If neither exists, a stock photo from `src/assets/stock/` is used, all served from this site (no third-party image hosts).
 
 `home-hero`, `deena-profile`, `signature-facial`, `skin-rejuvenation`, `laser-resurfacing`, `quadro-laser`, `anti-wrinkle`, `results-1`, `results-2`
 

@@ -26,7 +26,7 @@ const w = Number(width);
 const eager = loading ?? (rest.fetchpriority === 'high' ? 'eager' : 'lazy');
 ---
 {img ? (
-  <Image src={img} width={w} height={Number(height)} widths={[Math.round(w / 2), w]} sizes={sizes ?? `${w}px`} alt={alt} class={cls} loading={eager} {...rest} />
+  <Image src={img} width={w} height={Number(height)} widths={[Math.round(w / 2), Math.round(w * 0.75), w]} sizes={sizes ?? `${w}px`} alt={alt} class={cls} loading={eager} {...rest} />
 ) : fallback ? (
   <img src={fallback} srcset={fallbackSrcset} sizes={sizes} width={width} height={height} alt={alt} class={cls} loading={eager} {...rest} />
 ) : null}

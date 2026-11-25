@@ -31,9 +31,9 @@ const used = treatments.filter((tr) => cases.some((c) => c.treatment === tr.slug
         {cases.map((c) => (
           <figure class="ba-case reveal" data-treatment-case={c.treatment}>
             <div class="ba" dir="ltr" style="--pos:50%">
-              <Pic class="ba__img" local={`${c.id}-after`} width="900" height="1125" alt={t('results.afterAlt')} />
+              <Pic class="ba__img" src={c.after} width="900" height="1125" alt={t('results.afterAlt')} />
               <div class="ba__before" aria-hidden="true">
-                <Pic class="ba__img ba__img--before" local={`${c.id}-before`} width="900" height="1125" alt="" />
+                <Pic class="ba__img ba__img--before" src={c.before} width="900" height="1125" alt="" />
               </div>
               <span class="ba__label ba__label--before">{t('results.before')}</span>
               <span class="ba__label ba__label--after">{t('results.after')}</span>

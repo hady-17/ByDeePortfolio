@@ -6,7 +6,7 @@ const { lang } = Astro.props as { lang: Lang };
 const items = generalFaq[lang];
 const u = ui[lang];
 ---
-<section class="section faq" id="faq" aria-labelledby="faq-title">
+{items.length > 0 && <section class="section faq" id="faq" aria-labelledby="faq-title">
   <div class="container faq__inner">
     <header class="section__head">
       <p class="eyebrow reveal">{u.faqEyebrow}</p>
@@ -21,4 +21,4 @@ const u = ui[lang];
       ))}
     </div>
   </div>
-</section>
+</section>}

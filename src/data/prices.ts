@@ -1,28 +1,20 @@
-// Prices and packages. Empty on purpose: nothing is shown until you fill these in.
-// Key = treatment slug (signature-facial, skin-rejuvenation, laser-resurfacing,
-// laser-hair-removal, anti-wrinkle). Amounts are in US dollars.
+// Prices and packages. Edited in the admin area (/admin/), stored in src/cms/prices.json.
+// Nothing is shown until prices are added. Amounts are in US dollars.
+import data from '../cms/prices.json';
 
-export interface Price {
-  from: number;
-  /** optional short note, e.g. "per session" */
-  note?: { en: string; ar: string };
-}
-export interface Pack {
-  treatment: string;
-  name: { en: string; ar: string };
-  price: number;
-  includes: { en: string; ar: string };
-}
+export interface Bilingual { en: string; ar: string }
+export interface Price { from: number; note?: Bilingual }
+export interface Pack { treatment: string; name: Bilingual; price: number; includes: Bilingual }
 
-export const prices: Record<string, Price> = {
-  // 'signature-facial': { from: 40, note: { en: 'per session', ar: 'للجلسة' } },
-};
+interface PriceRow { treatment: string; from: number | null; note?: Partial<Bilingual> }
 
-export const packages: Pack[] = [
-  // {
-  //   treatment: 'laser-hair-removal',
-  //   name: { en: 'Full legs, 6 sessions', ar: 'ساقان كاملتان، 6 جلسات' },
-  //   price: 300,
-  //   includes: { en: 'Six sessions, consultation included', ar: 'ست جلسات مع الاستشارة' }
-  // }
-];
+const hasNote = (n?: Partial<Bilingual>) => Boolean(n && (n.en || n.ar));
+
+/** treatment slug -> price */
+export const prices: Record<string, Price> = Object.fromEntries(
+  ((data.prices ?? []) as PriceRow[])
+    .filter((p) => p.treatment && typeof p.from === 'number' && p.from > 0)
+    .map((p) => [p.treatment, { from: p.from as number, ...(hasNote(p.note) ? { note: { en: p.note!.en ?? '', ar: p.note!.ar ?? p.note!.en ?? '' } } : {}) }])
+);
+
+export const packages: Pack[] = ((data.packages ?? []) as Pack[]).filter((p) => p.treatment && p.name?.en && typeof p.price === 'number');

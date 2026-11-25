@@ -1,17 +1,31 @@
 ---
-// Uses a local photo from src/assets/<name>.(jpg|jpeg|png|webp|avif) when present
-// (optimised at build time), otherwise falls back to the stock photo URL.
+// Picks the best image for a slot, optimised at build time:
+//   1. `src`: an image path chosen in the admin area, e.g. /src/assets/uploads/photo.jpg
+//   2. a replacement chosen in the admin area for this slot (src/cms/images.json)
+//   3. a file named src/assets/<local>.(jpg|jpeg|png|webp|avif)
+//   4. the stock photo URL in `fallback`
 import { Image } from 'astro:assets';
+import overrides from '../cms/images.json';
 
-const { local, fallback, fallbackSrcset, sizes, width, height, alt = '', class: cls, loading, ...rest } = Astro.props;
-const mods = import.meta.glob('/src/assets/*.{jpg,jpeg,png,webp,avif}', { eager: true }) as Record<string, { default: ImageMetadata }>;
-const key = Object.keys(mods).find((k) => k.toLowerCase().replace(/\.[^.]+$/, '') === `/src/assets/${local}`);
-const img = key ? mods[key].default : null;
+const { local, src, fallback, fallbackSrcset, sizes, width, height, alt = '', class: cls, loading, ...rest } = Astro.props;
+const mods = import.meta.glob('/src/assets/**/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}', { eager: true }) as Record<string, { default: ImageMetadata }>;
+const byPath = (p?: string) => {
+  if (!p) return null;
+  const want = ('/' + String(p).replace(/^\/+/, '')).toLowerCase();
+  const key = Object.keys(mods).find((k) => k.toLowerCase() === want);
+  return key ? mods[key].default : null;
+};
+const byName = (name?: string) => {
+  if (!name) return null;
+  const key = Object.keys(mods).find((k) => k.toLowerCase().replace(/\.[^.]+$/, '') === `/src/assets/${name}`.toLowerCase());
+  return key ? mods[key].default : null;
+};
+const img = byPath(src) ?? byPath((overrides as Record<string, string>)[local]) ?? byName(local);
 const w = Number(width);
 const eager = loading ?? (rest.fetchpriority === 'high' ? 'eager' : 'lazy');
 ---
 {img ? (
   <Image src={img} width={w} height={Number(height)} widths={[Math.round(w / 2), w]} sizes={sizes ?? `${w}px`} alt={alt} class={cls} loading={eager} {...rest} />
-) : (
+) : fallback ? (
   <img src={fallback} srcset={fallbackSrcset} sizes={sizes} width={width} height={height} alt={alt} class={cls} loading={eager} {...rest} />
-)}
+) : null}

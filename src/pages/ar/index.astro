@@ -4,4 +4,4 @@ import { generalFaq } from '../../i18n/treatments';
 import Home from '../../components/Home.astro';
 const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: generalFaq['ar'].map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
 ---
-<Base lang="ar" path="/" schema jsonLd={[faqLd]}><Home lang="ar" /></Base>
+<Base lang="ar" path="/" schema jsonLd={generalFaq['ar'].length ? [faqLd] : []}><Home lang="ar" /></Base>

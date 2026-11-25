@@ -1,19 +1,14 @@
-// Client reviews. Empty on purpose: the Reviews section and its nav links stay hidden
-// until you add real reviews here. Only use reviews the client agreed to publish,
-// and keep the wording exactly as they wrote it.
+// Client reviews. Edited in the admin area (/admin/), stored in src/cms/reviews.json.
+// The Reviews section stays hidden until a review is added. Only use reviews the client
+// agreed to publish, and keep the wording exactly as they wrote it.
+import data from '../cms/reviews.json';
 
 export interface Review {
-  /** the client's name, or first name and initial, as they agreed */
   name: string;
   /** treatment slug */
   treatment: string;
-  /** the review as written, in the language they wrote it */
   text: string;
   lang: 'en' | 'ar';
 }
 
-export const reviews: Review[] = [
-  // { name: 'Rima H.', treatment: 'skin-rejuvenation', lang: 'en', text: '...' }
-  //trying
-  
-];
+export const reviews: Review[] = ((data.reviews ?? []) as Review[]).filter((r) => r.name && r.text);

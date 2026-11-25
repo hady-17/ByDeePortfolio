@@ -6,6 +6,7 @@
    3. Layout helpers                 8. Treatments     13. Contact / map
    4. Components (btn, icons...)     9. Before/After   14. Footer + mobile bar
    5. Header & nav                  10. Why / stats    15. Motion & reduced motion
+                                                       16. Glass & ambient backdrop
    Logical properties (inline/block) are used throughout so RTL works for free.
    ========================================================================== */
 
@@ -39,6 +40,20 @@
   --media-b: #D9C7AE;
   --shadow-sm: 0 1px 2px rgba(31, 28, 25, .05), 0 4px 14px rgba(31, 28, 25, .05);
   --shadow-lg: 0 2px 6px rgba(31, 28, 25, .05), 0 24px 60px -20px rgba(31, 28, 25, .22);
+
+  /* Glass + ambient backdrop (section 16) */
+  --glass-bg: rgba(255, 253, 249, .52);
+  --glass-bg-strong: rgba(255, 253, 249, .78);
+  --glass-border: rgba(255, 255, 255, .7);
+  --glass-edge: rgba(31, 28, 25, .08);
+  --glass-hl: rgba(255, 255, 255, .85);
+  --glass-blur: 18px;
+  --glass-shadow: 0 1px 2px rgba(31, 28, 25, .04), 0 22px 50px -22px rgba(110, 82, 40, .28);
+  --orb-1: rgba(201, 169, 110, .45);  /* champagne */
+  --orb-2: rgba(226, 172, 160, .38);  /* blush */
+  --orb-3: rgba(176, 190, 160, .34);  /* sage */
+  --orb-4: rgba(230, 208, 178, .65);  /* sand */
+  --pane: rgba(255, 255, 255, .26);
 
   /* Typography */
   --font-display: "Cormorant Garamond", "Times New Roman", serif;
@@ -91,6 +106,17 @@
   --media-b: #3A3128;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 14px rgba(0, 0, 0, .25);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, .3), 0 24px 60px -20px rgba(0, 0, 0, .6);
+  --glass-bg: rgba(38, 33, 28, .46);
+  --glass-bg-strong: rgba(30, 26, 22, .8);
+  --glass-border: rgba(255, 255, 255, .09);
+  --glass-edge: rgba(0, 0, 0, .35);
+  --glass-hl: rgba(255, 255, 255, .07);
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 24px 56px -22px rgba(0, 0, 0, .7);
+  --orb-1: rgba(212, 182, 126, .22);
+  --orb-2: rgba(168, 92, 82, .2);
+  --orb-3: rgba(70, 112, 104, .18);
+  --orb-4: rgba(98, 74, 50, .32);
+  --pane: rgba(255, 255, 255, .025);
   color-scheme: dark;
 }
 
@@ -839,3 +865,152 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 .article__related { display: grid; gap: var(--s-2); justify-items: start; }
 .article__body ul + p, .article__body ol + p { margin-block-start: var(--s-4); }
 #quiz-restart { justify-self: start; }
+
+/* 16. GLASS & AMBIENT BACKDROP ============================================
+   A fixed, softly drifting field of colour orbs + diagonal light panes sits
+   behind the whole site; surfaces above it are frosted glass, so content
+   reads as stacked, shaded layers. Colours come from the --orb-* / --glass-*
+   / --pane tokens (light + dark). Only transform is animated on the backdrop.
+   ========================================================================== */
+
+/* Ambient layer 1: colour orbs */
+body::before {
+  content: ""; position: fixed; inset: -18vmax; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(40vmax 40vmax at 14% 16%, var(--orb-1), transparent 70%),
+    radial-gradient(34vmax 34vmax at 88% 10%, var(--orb-2), transparent 70%),
+    radial-gradient(44vmax 44vmax at 80% 84%, var(--orb-3), transparent 70%),
+    radial-gradient(38vmax 38vmax at 16% 90%, var(--orb-4), transparent 70%),
+    radial-gradient(28vmax 28vmax at 52% 50%, var(--orb-2), transparent 72%);
+  animation: ambientDrift 48s ease-in-out infinite alternate;
+  will-change: transform;
+}
+/* Ambient layer 2: overlapping glass panes (shaded bands) + fine grain */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(112deg, transparent 0 34%, var(--pane) 34% 47%, transparent 47%),
+    linear-gradient(112deg, transparent 0 58%, var(--pane) 58% 66%, transparent 66%),
+    linear-gradient(68deg, transparent 0 72%, var(--pane) 72% 86%, transparent 86%);
+  background-size: 160px 160px, 100% 100%, 100% 100%, 100% 100%;
+}
+@keyframes ambientDrift {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate3d(4vmax, -3vmax, 0) rotate(8deg) scale(1.06); }
+  100% { transform: translate3d(-3vmax, 4vmax, 0) rotate(-6deg) scale(1.02); }
+}
+
+/* Shared frosted surface */
+.t-card, .form, .faq__item, .post-card, .offer, .gift__amount, .pack, .quiz__opt,
+.quiz__card, .article__related, .cookie, .carousel, .map, .referral, .chip,
+.hero__badge, .about__caption {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  box-shadow: inset 0 1px 0 var(--glass-hl), 0 0 0 1px var(--glass-edge), var(--glass-shadow);
+}
+.t-card, .form, .faq__item, .post-card, .gift__amount, .pack, .quiz__opt,
+.article__related, .cookie, .chip, .hero__badge, .map { border-color: var(--glass-border); }
+.offer, .quiz__card { border-color: color-mix(in srgb, var(--accent) 55%, var(--glass-border)); }
+.chip.is-active { background: var(--accent); border-color: var(--accent); }
+.quiz__opt:has(input:checked) { background: color-mix(in srgb, var(--accent) 18%, var(--glass-bg)); border-color: var(--accent); }
+
+/* Hover: the pane catches more light */
+.t-card:hover, .t-card:focus-within, .post-card:hover, .gift__amount:hover {
+  background: color-mix(in srgb, var(--glass-bg-strong) 80%, transparent);
+}
+
+/* Reviews float on one large pane */
+.carousel { padding: clamp(2rem, 1.2rem + 3vw, 3.75rem) clamp(1.25rem, 4vw, 3.5rem); border: 1px solid var(--glass-border); border-radius: 28px; }
+
+/* Ghost / outlined buttons become small glass chips */
+.btn--ghost, .icon-btn--line, .pill-btn {
+  background: color-mix(in srgb, var(--glass-bg) 70%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.map__btn { background: var(--glass-bg-strong); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+
+/* Inputs: frosted wells inside the glass form */
+.field__input { background-color: color-mix(in srgb, var(--surface) 62%, transparent); }
+
+/* Tinted bands: translucent shaded layer instead of a flat fill */
+.section--tint {
+  background:
+    linear-gradient(112deg, transparent 0 40%, var(--pane) 40% 60%, transparent 60%),
+    linear-gradient(180deg, transparent, color-mix(in srgb, var(--tint) 55%, transparent) 16%, color-mix(in srgb, var(--tint) 55%, transparent) 84%, transparent);
+}
+
+/* Dark band: smoked glass with its own inner glow */
+.section--dark {
+  isolation: isolate; overflow: hidden;
+  background: color-mix(in srgb, var(--dark-bg) 90%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 -1px 0 rgba(255, 255, 255, .04);
+}
+.section--dark::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(40rem 26rem at 12% 0%, rgba(201, 169, 110, .22), transparent 70%),
+    radial-gradient(36rem 24rem at 92% 100%, rgba(168, 92, 82, .18), transparent 70%);
+}
+.section--dark .reason {
+  padding: var(--s-6) var(--s-5); border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .08);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 24px 50px -24px rgba(0, 0, 0, .6);
+}
+
+/* Header, mobile bar, mobile drawer: stronger frosted glass */
+.header::before {
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  -webkit-backdrop-filter: saturate(160%) blur(22px); backdrop-filter: saturate(160%) blur(22px);
+  border-block-end-color: var(--glass-border);
+  box-shadow: inset 0 -1px 0 var(--glass-edge), 0 10px 30px -18px rgba(31, 28, 25, .25);
+}
+.mbar {
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  -webkit-backdrop-filter: saturate(160%) blur(22px); backdrop-filter: saturate(160%) blur(22px);
+  border-block-start-color: var(--glass-border);
+}
+@media (max-width: 959.98px) {
+  .nav {
+    background: color-mix(in srgb, var(--bg) 74%, transparent);
+    -webkit-backdrop-filter: saturate(160%) blur(30px); backdrop-filter: saturate(160%) blur(30px);
+  }
+}
+
+/* Hero: layered glass slabs behind the arch image */
+.hero__media { isolation: isolate; }
+.hero__media::before, .hero__media::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%); backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-hl), var(--glass-shadow);
+}
+.hero__media::before { /* tilted pane */
+  inset-block: 12% -6%; inset-inline: 24% -14%;
+  border-radius: 32px; transform: rotate(7deg);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 20%, transparent), var(--glass-bg) 55%);
+}
+[dir="rtl"] .hero__media::before { transform: rotate(-7deg); }
+.hero__media::after { /* frosted disc */
+  inline-size: clamp(90px, 22%, 130px); aspect-ratio: 1; border-radius: 50%;
+  inset-block-start: -5%; inset-inline-start: -8%;
+}
+@media (max-width: 600px) { .hero__media::before { inset-inline: 18% -8%; } }
+
+/* About: offset hairline frame becomes a frosted, gold-tinted layer */
+.about__media::before {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 22%, transparent), var(--glass-bg) 60%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)); backdrop-filter: blur(var(--glass-blur));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--glass-border));
+  box-shadow: inset 0 1px 0 var(--glass-hl), var(--glass-shadow);
+}
+.tpage__media { box-shadow: 0 0 0 1px var(--glass-edge), var(--glass-shadow); }
+
+/* No backdrop-filter support: use more opaque panes so text stays legible */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root, [data-theme="dark"] { --glass-bg: var(--glass-bg-strong); }
+}

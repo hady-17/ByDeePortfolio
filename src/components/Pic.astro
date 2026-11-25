@@ -3,7 +3,8 @@
 //   1. `src`: an image path chosen in the admin area, e.g. /src/assets/uploads/photo.jpg
 //   2. a replacement chosen in the admin area for this slot (src/cms/images.json)
 //   3. a file named src/assets/<local>.(jpg|jpeg|png|webp|avif)
-//   4. the stock photo URL in `fallback`
+//   4. a stock photo kept with the site: src/assets/stock/<local>.*
+//   5. the stock photo URL in `fallback` (last resort)
 import { Image } from 'astro:assets';
 import overrides from '../cms/images.json';
 
@@ -20,7 +21,7 @@ const byName = (name?: string) => {
   const key = Object.keys(mods).find((k) => k.toLowerCase().replace(/\.[^.]+$/, '') === `/src/assets/${name}`.toLowerCase());
   return key ? mods[key].default : null;
 };
-const img = byPath(src) ?? byPath((overrides as Record<string, string>)[local]) ?? byName(local);
+const img = byPath(src) ?? byPath((overrides as Record<string, string>)[local]) ?? byName(local) ?? byName(local && `stock/${local}`);
 const w = Number(width);
 const eager = loading ?? (rest.fetchpriority === 'high' ? 'eager' : 'lazy');
 ---

@@ -274,18 +274,18 @@ singletons:
       - { name: phone, label: Phone number for calling, widget: string, hint: "Example: +96181126500" }
       - { name: phoneDisplay, label: Phone number as shown on the site, widget: string, hint: "Example: +961 81 126 500" }
       - { name: email, label: Email address, widget: string, required: false }
-      - { name: instagram, label: Instagram page link, widget: string, required: false, hint: "Example: https://instagram.com/bydee961" }
-      - { name: bookingUrl, label: Online booking link, widget: string, required: false, hint: "Optional. A Fresha, Setmore or similar booking page. Adds a Book online button." }
-      - { name: googleReviewUrl, label: Google review link, widget: string, required: false, hint: "Optional. Your Google 'Ask for reviews' link. Adds a Leave a Google review link." }
+      - { name: instagram, label: Instagram page link, widget: string, required: false, pattern: ['^https?://.+', 'Start with https://, for example https://example.com'], hint: "Example: https://instagram.com/bydee961" }
+      - { name: bookingUrl, label: Online booking link, widget: string, required: false, pattern: ['^https?://.+', 'Start with https://, for example https://example.com'], hint: "Optional. A Fresha, Setmore or similar booking page. Adds a Book online button." }
+      - { name: googleReviewUrl, label: Google review link, widget: string, required: false, pattern: ['^https?://.+', 'Start with https://, for example https://example.com'], hint: "Optional. Your Google 'Ask for reviews' link. Adds a Leave a Google review link." }
 
   - name: advanced
     label: Advanced settings
     icon: tune
     file: src/cms/advanced.json
     fields:
-      - { name: url, label: Website address, widget: string, hint: "Only change this when a new domain is connected in Vercel." }
+      - { name: url, label: Website address, widget: string, pattern: ['^https?://.+', 'Start with https://, for example https://example.com'], hint: "Only change this when a new domain is connected in Vercel." }
       - { name: name, label: Clinic name, widget: string }
-      - { name: googleBusinessUrl, label: Google Business Profile link, widget: string, required: false }
+      - { name: googleBusinessUrl, label: Google Business Profile link, widget: string, required: false, pattern: ['^https?://.+', 'Start with https://, for example https://example.com'] }
       - name: geo
         label: Exact map location
         hint: "Optional. In Google Maps, right-click the clinic and click the numbers to copy them. Example: 33.8869, 35.4955"

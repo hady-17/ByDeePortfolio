@@ -1,0 +1,95 @@
+---
+import Base from './Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import site from '../../site.config.mjs';
+import { treatments } from '../i18n/treatments';
+import { makeP3 } from '../i18n/phase3';
+import { makeT, localePath, type Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = makeT(lang);
+const q = makeP3(lang);
+const path = '/skin-quiz/';
+const home = localePath(lang, '/');
+const bookHref = (book: string) => site.bookingUrl || `${home}?treatment=${book}#booking`;
+
+const questions = [
+  { name: 'goal', label: q('quiz.q1'), options: ['glow', 'clean', 'texture', 'lines', 'hair'].map((v) => ({ v, l: q(`quiz.q1.${v}`) })) },
+  { name: 'downtime', label: q('quiz.q2'), options: ['none', 'short', 'week'].map((v) => ({ v, l: q(`quiz.q2.${v}`) })) },
+  { name: 'pregnant', label: q('quiz.q3'), options: [{ v: 'yes', l: q('quiz.yes') }, { v: 'no', l: q('quiz.no') }] },
+  { name: 'tan', label: q('quiz.q4'), options: [{ v: 'yes', l: q('quiz.yes') }, { v: 'no', l: q('quiz.no') }] }
+];
+---
+<Base lang={lang} path={path} title={`${q('quiz.title')} | ${t('meta.short')}`} description={q('quiz.lead')}>
+  <SiteHeader lang={lang} path={path} />
+
+  <main id="main" class="tpage quiz">
+    <div class="container quiz__inner">
+      <p class="eyebrow">{q('quiz.nav')}</p>
+      <h1 class="h2">{q('quiz.title')}</h1>
+      <p class="section__lead">{q('quiz.lead')}</p>
+
+      <form class="quiz__form" id="quiz-form" novalidate>
+        {questions.map((qq, i) => (
+          <fieldset class="quiz__q">
+            <legend><span class="quiz__num" aria-hidden="true">{i + 1}</span> {qq.label}</legend>
+            <div class="quiz__opts">
+              {qq.options.map((o) => (
+                <label class="quiz__opt">
+                  <input type="radio" name={qq.name} value={o.v} required />
+                  <span>{o.l}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+        <p class="quiz__error" role="alert" hidden>{q('quiz.missing')}</p>
+        <button class="btn btn--primary btn--lg" type="submit"><span>{q('quiz.submit')}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </form>
+
+      <section class="quiz__result" id="quiz-result" tabindex="-1" aria-live="polite" hidden>
+        <p class="quiz__note quiz__note--warn" data-note="preg" hidden>{q('quiz.preg')}</p>
+
+        <div data-block="main" hidden>
+          <p class="eyebrow">{q('quiz.result')}</p>
+          {treatments.map((tr) => (
+            <article class="quiz__card" data-result={tr.slug} hidden>
+              <h2 class="quiz__card-title">{t(`${tr.key}.title`)}</h2>
+              <p>{tr.copy[lang].intro}</p>
+              <div class="tpage__cta">
+                <a class="btn btn--primary" href={bookHref(tr.book)}><span>{q('quiz.book')}</span></a>
+                <a class="btn btn--ghost" href={localePath(lang, `/treatments/${tr.slug}/`)}><span>{q('quiz.view')}</span></a>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div class="quiz__consult" data-block="consult" hidden>
+          <a class="btn btn--primary" href={bookHref('consultation')}><span>{q('quiz.book')}</span></a>
+        </div>
+
+        <p class="quiz__note" data-note="downtime" hidden>{q('quiz.downtime')}</p>
+        <p class="quiz__note" data-note="tan" hidden>{q('quiz.tan')}</p>
+
+        <div data-block="alt" hidden>
+          <p class="eyebrow">{q('quiz.also')}</p>
+          <ul class="tpage__others" role="list">
+            {treatments.map((tr) => (
+              <li data-alt={tr.slug} hidden><a class="link-arrow" href={localePath(lang, `/treatments/${tr.slug}/`)}><span>{t(`${tr.key}.title`)}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+            ))}
+          </ul>
+        </div>
+
+        <p class="tpage__note">{q('quiz.note')} <a href={localePath(lang, '/medical-disclaimer/')}>{t('legal.disclaimer')}</a></p>
+        <button class="btn btn--ghost btn--sm" type="button" id="quiz-restart">{q('quiz.restart')}</button>
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter lang={lang} />
+  <script>
+    import { initQuiz } from '../scripts/quiz.js';
+    initQuiz();
+  </script>
+</Base>

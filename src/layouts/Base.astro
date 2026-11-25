@@ -16,8 +16,8 @@ import site from '../../site.config.mjs';
 import { dirOf, otherLang, localePath, makeT, type Lang } from '../i18n';
 import CookieBanner from '../components/CookieBanner.astro';
 
-interface Props { lang: Lang; path?: string; title?: string; description?: string; noindex?: boolean; schema?: boolean; jsonLd?: object[] }
-const { lang, path = '/', title, description, noindex = false, schema = false, jsonLd = [] } = Astro.props;
+interface Props { lang: Lang; path?: string; title?: string; description?: string; noindex?: boolean; schema?: boolean; jsonLd?: object[]; alternate?: boolean }
+const { lang, path = '/', title, description, noindex = false, schema = false, jsonLd = [], alternate = true } = Astro.props;
 const t = makeT(lang);
 const abs = (l: Lang) => new URL(localePath(l, path), site.url).href;
 const pageTitle = title ?? t('meta.title');
@@ -55,9 +55,9 @@ const ld = {
   <title>{pageTitle}</title>
   <meta name="description" content={pageDesc}>
   <link rel="canonical" href={abs(lang)}>
-  <link rel="alternate" hreflang="en" href={abs('en')}>
-  <link rel="alternate" hreflang="ar" href={abs('ar')}>
-  <link rel="alternate" hreflang="x-default" href={abs('en')}>
+  {alternate && <link rel="alternate" hreflang="en" href={abs('en')}>}
+  {alternate && <link rel="alternate" hreflang="ar" href={abs('ar')}>}
+  {alternate && <link rel="alternate" hreflang="x-default" href={abs('en')}>}
   <meta name="google-site-verification" content="bY4fZhUD2-Szm9LBUz2UJ5D30kMDoaRPyGBBkZUXIu0">
   <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'}>
   <meta name="theme-color" content="#FAF6EF">

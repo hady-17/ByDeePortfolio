@@ -15,12 +15,15 @@ npm run preview   # serve dist/ locally
 
 ```
 site.config.mjs        # domain, phone, WhatsApp, analytics IDs, Google Business links
-src/pages/             # / and /ar/ (home), /treatments/<slug>/, /privacy, /terms, /medical-disclaimer (+ /ar/ copies)
+src/pages/             # / and /ar/ (home), /treatments/<slug>/, /skin-quiz/, /journal/, legal pages (+ /ar/ copies)
 src/components/Home.astro   # the home page markup (used for both languages)
 src/i18n/en.json, ar.json   # all page text, one key per string
 src/i18n/legal.ts           # legal page text (DRAFT, have a lawyer review)
 src/i18n/treatments.ts      # treatment page content, general FAQ (DRAFT, Deena to review)
 src/data/                   # prices.ts, results.ts, reviews.ts: empty until filled in
+src/data/promotions.ts      # offers, gift cards, referral, WhatsApp opt-in: off until filled in
+src/content/journal/en|ar/  # journal articles (Markdown), same file name in both folders
+src/scripts/quiz.js         # skin quiz logic (runs in the browser, sends nothing)
 src/layouts/           # Base (SEO, hreflang, structured data), Legal
 src/scripts/           # main.js (UI, booking form), analytics.js (consent-aware)
 src/assets/            # photos, optimised to WebP at build time
@@ -48,5 +51,21 @@ Put photos in `src/assets/` with these names (any of jpg, jpeg, png, webp, avif)
 - **Before/after cases:** add photo pairs to `src/assets/` and a consented entry in `src/data/results.ts`. The section, filter buttons and nav link appear automatically.
 - **Online booking:** set `bookingUrl` in `site.config.mjs` (Fresha, Setmore, Cal.com...). A "Book online" button then appears.
 - **Treatment and FAQ text:** have Deena check `src/i18n/treatments.ts` (sessions, downtime, who should avoid, aftercare) so it matches her practice.
+- **Offers, gift cards, referral, WhatsApp opt-in:** fill in `src/data/promotions.ts`. Each part appears only once filled in or switched on. Offers disappear after their end date at the next build.
+- **Journal:** add a Markdown file to `src/content/journal/en/` and the same file name to `src/content/journal/ar/`. Set `draft: true` to hide one. Have Deena review articles before publishing.
 - **"Why us" counters:** still hidden with a `hidden` attribute in `Home.astro` until real figures are confirmed.
 - **Booking:** the form opens WhatsApp with the details. No data is stored on the site.
+
+## Writing a journal article
+
+```md
+---
+title: "Article title"
+description: "One or two sentences shown in search results and the article list."
+date: 2026-12-01
+treatment: laser-hair-removal   # optional, adds a link to that treatment page
+draft: false
+---
+
+Your text in Markdown. Use ## for section headings and - for lists.
+```

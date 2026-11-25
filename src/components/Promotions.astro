@@ -1,0 +1,59 @@
+---
+// Offers + gift cards from src/data/promotions.ts. Renders nothing while both are empty.
+import site from '../../site.config.mjs';
+import { offers, giftCards } from '../data/promotions';
+import { treatments } from '../i18n/treatments';
+import { makeP3 } from '../i18n/phase3';
+import { localePath, type Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const q = makeP3(lang);
+const today = new Date().toISOString().slice(0, 10);
+const live = offers.filter((o) => !o.until || o.until >= today);
+const home = localePath(lang, '/');
+const money = (n: number) => `$${n.toLocaleString('en-US')}`;
+const fmt = new Intl.DateTimeFormat(lang === 'ar' ? 'ar-LB-u-nu-latn' : 'en-GB', { dateStyle: 'medium' });
+const wa = (text: string) => `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(text)}`;
+const bookFor = (slug?: string) => {
+  const tr = treatments.find((x) => x.slug === slug);
+  return tr ? `${home}?treatment=${tr.book}#booking` : `${home}#booking`;
+};
+---
+{live.length > 0 && (
+  <section class="section offers" id="offers" aria-labelledby="offers-title">
+    <div class="container">
+      <header class="section__head">
+        <p class="eyebrow reveal">{q('offers.eyebrow')}</p>
+        <h2 class="h2 reveal" id="offers-title">{q('offers.title')}</h2>
+      </header>
+      <ul class="offers__grid" role="list">
+        {live.map((o) => (
+          <li class="offer reveal" data-until={o.until}>
+            <h3 class="offer__title">{o.title[lang]}</h3>
+            <p>{o.text[lang]}</p>
+            {o.until && <p class="offer__until">{q('offers.until')} <time datetime={o.until}>{fmt.format(new Date(o.until))}</time></p>}
+            <a class="link-arrow" href={site.bookingUrl || bookFor(o.treatment)}><span>{q('quiz.book')}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+{giftCards.amounts.length > 0 && (
+  <section class="section section--tint gift" id="gift-cards" aria-labelledby="gift-title">
+    <div class="container gift__inner">
+      <div>
+        <p class="eyebrow reveal">{q('gift.eyebrow')}</p>
+        <h2 class="h2 reveal" id="gift-title">{q('gift.title')}</h2>
+        <p class="reveal">{q('gift.text')}</p>
+        {giftCards.note[lang] && <p class="gift__note reveal">{giftCards.note[lang]}</p>}
+      </div>
+      <ul class="gift__amounts reveal" role="list">
+        {giftCards.amounts.map((a) => (
+          <li><a class="gift__amount" href={wa(q('gift.wa', { amount: money(a) }))} target="_blank" rel="noopener"><strong>{money(a)}</strong><span>{q('gift.buy')}</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

@@ -2,9 +2,11 @@
 // Header + icon sprite for inner pages (treatments, legal). The home page has its own header.
 import site from '../../site.config.mjs';
 import { makeT, otherLang, localePath, type Lang } from '../i18n';
+import { makeP3 } from '../i18n/phase3';
 
 const { lang, path = '/', bookValue } = Astro.props as { lang: Lang; path?: string; bookValue?: string };
 const t = makeT(lang);
+const q = makeP3(lang);
 const home = localePath(lang, '/');
 const bookHref = site.bookingUrl || `${home}${bookValue ? `?treatment=${bookValue}` : ''}#booking`;
 ---
@@ -25,6 +27,8 @@ const bookHref = site.bookingUrl || `${home}${bookValue ? `?treatment=${bookValu
     </a>
     <nav class="subnav" aria-label="Main">
       <a href={`${home}#treatments`}>{t('nav.treatments')}</a>
+      <a href={localePath(lang, '/skin-quiz/')}>{q('quiz.nav')}</a>
+      <a href={localePath(lang, '/journal/')}>{q('journal.nav')}</a>
       <a href={`${home}#faq`}>{t('nav.faq')}</a>
       <a href={`${home}#contact`}>{t('nav.contact')}</a>
     </nav>

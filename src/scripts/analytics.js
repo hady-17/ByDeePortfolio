@@ -49,6 +49,7 @@ export function initAnalytics() {
     else if (a.href.startsWith('tel:')) track('phone_click');
   });
   document.addEventListener('bydee:booking', () => track('booking_request'));
+  document.addEventListener('bydee:quiz', (e) => track('quiz_complete', { suggestion: e.detail?.main || 'consultation' }));
 
   const banner = document.getElementById('cookie-banner');
   const choice = get();

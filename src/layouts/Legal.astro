@@ -10,7 +10,7 @@ const { lang, doc } = Astro.props as { lang: Lang; doc: LegalDoc };
 const t = makeT(lang);
 const x = legalExtra[lang];
 const path = `/${doc.slug}/`;
-const date = new Intl.DateTimeFormat(lang === 'ar' ? 'ar-LB' : 'en-GB', { dateStyle: 'long' }).format(new Date(site.lastUpdated));
+const date = new Intl.DateTimeFormat(lang === 'ar' ? 'ar-LB-u-nu-latn' : 'en-GB', { dateStyle: 'long' }).format(new Date(site.lastUpdated));
 ---
 <Base lang={lang} path={path} title={`${doc.title} | ByDee`} description={doc.lead}>
   <SiteHeader lang={lang} path={path} />

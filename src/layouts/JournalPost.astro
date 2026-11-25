@@ -1,0 +1,61 @@
+---
+import { render } from 'astro:content';
+import Base from './Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import site from '../../site.config.mjs';
+import { hasTranslation, slugOf, type Post } from '../i18n/journal';
+import { treatments } from '../i18n/treatments';
+import { makeP3 } from '../i18n/phase3';
+import { makeT, localePath, otherLang, type Lang } from '../i18n';
+
+const { lang, post } = Astro.props as { lang: Lang; post: Post };
+const t = makeT(lang);
+const q = makeP3(lang);
+const slug = slugOf(post);
+const path = `/journal/${slug}/`;
+const translated = await hasTranslation(lang, slug);
+const { Content } = await render(post);
+const fmt = new Intl.DateTimeFormat(lang === 'ar' ? 'ar-LB-u-nu-latn' : 'en-GB', { dateStyle: 'long' });
+const related = treatments.find((x) => x.slug === post.data.treatment);
+const url = new URL(localePath(lang, path), site.url).href;
+
+const jsonLd = [{
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date.toISOString(),
+  dateModified: (post.data.updated ?? post.data.date).toISOString(),
+  inLanguage: lang,
+  mainEntityOfPage: url,
+  author: { '@type': 'Person', name: 'Deena Kaddoura, RN' },
+  publisher: { '@type': 'Organization', name: site.name, logo: { '@type': 'ImageObject', url: new URL('/icon-512.png', site.url).href } },
+  image: new URL('/og-cover.png', site.url).href
+}];
+---
+<Base lang={lang} path={path} title={`${post.data.title} | ByDee`} description={post.data.description} jsonLd={jsonLd} alternate={translated}>
+  <SiteHeader lang={lang} path={translated ? path : '/journal/'} />
+  <main id="main" class="tpage">
+    <article class="container article">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href={localePath(lang, '/journal/')}>{q('journal.nav')}</a> <span aria-hidden="true">/</span> <span aria-current="page">{post.data.title}</span>
+      </nav>
+      <p class="eyebrow"><time datetime={post.data.date.toISOString().slice(0, 10)}>{fmt.format(post.data.date)}</time></p>
+      <h1 class="h2">{post.data.title}</h1>
+      <p class="section__lead">{post.data.description}</p>
+      <div class="article__body">
+        <Content />
+      </div>
+      {related && (
+        <aside class="article__related">
+          <p class="eyebrow">{q('journal.related')}</p>
+          <a class="link-arrow" href={localePath(lang, `/treatments/${related.slug}/`)}><span>{t(`${related.key}.title`)}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </aside>
+      )}
+      <p class="tpage__note">{q('journal.note')} <a href={localePath(lang, '/medical-disclaimer/')}>{t('legal.disclaimer')}</a></p>
+      <p><a class="link-arrow" href={localePath(lang, '/journal/')}><span>{q('journal.back')}</span></a></p>
+    </article>
+  </main>
+  <SiteFooter lang={lang} />
+</Base>

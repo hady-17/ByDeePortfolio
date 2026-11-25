@@ -87,6 +87,7 @@ import { initAnalytics } from './analytics.js';
     const header = $('#header');
     const nav = $('#site-nav');
     const toggle = $('.js-nav-toggle');
+    if (!header || !nav || !toggle) return () => {}; // inner pages use a simpler header
     const desktop = window.matchMedia('(min-width: 960px)');
 
     const setOpen = (open) => {
@@ -141,6 +142,7 @@ import { initAnalytics } from './analytics.js';
     requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('is-loaded')));
     const hero = $('.hero');
     const img = $('.hero__img');
+    if (!hero) return () => {}; // only the home page has a hero
     let visible = true;
     const heroIO = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
     heroIO.observe(hero);

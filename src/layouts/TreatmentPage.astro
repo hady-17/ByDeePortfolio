@@ -21,7 +21,7 @@ const price = prices[slug];
 const packs = packages.filter((p) => p.treatment === slug);
 const others = treatments.filter((x) => x.slug !== slug);
 const bookHref = site.bookingUrl || `${home}?treatment=${tr.book}#booking`;
-const money = (n: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-LB' : 'en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+const money = (n: number) => `$${n.toLocaleString('en-US')}`;
 const abs = (p: string) => new URL(p, site.url).href;
 
 const jsonLd = [

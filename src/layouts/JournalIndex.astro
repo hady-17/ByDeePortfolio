@@ -1,0 +1,36 @@
+---
+import Base from './Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { postsFor, slugOf } from '../i18n/journal';
+import { makeP3 } from '../i18n/phase3';
+import { makeT, localePath, type Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = makeT(lang);
+const q = makeP3(lang);
+const posts = await postsFor(lang);
+const path = '/journal/';
+const fmt = new Intl.DateTimeFormat(lang === 'ar' ? 'ar-LB-u-nu-latn' : 'en-GB', { dateStyle: 'long' });
+---
+<Base lang={lang} path={path} title={`${q('journal.title')} | ${t('meta.short')}`} description={q('journal.lead')}>
+  <SiteHeader lang={lang} path={path} />
+  <main id="main" class="tpage">
+    <div class="container">
+      <p class="eyebrow">{q('journal.nav')}</p>
+      <h1 class="h2">{q('journal.title')}</h1>
+      <p class="section__lead">{q('journal.lead')}</p>
+      <ul class="posts" role="list">
+        {posts.map((p) => (
+          <li class="post-card">
+            <time datetime={p.data.date.toISOString().slice(0, 10)}>{fmt.format(p.data.date)}</time>
+            <h2 class="post-card__title"><a href={localePath(lang, `/journal/${slugOf(p)}/`)}>{p.data.title}</a></h2>
+            <p>{p.data.description}</p>
+            <span class="link-arrow" aria-hidden="true"><span>{q('journal.read')}</span><svg class="icon icon--flip"><use href="#i-arrow"/></svg></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </main>
+  <SiteFooter lang={lang} />
+</Base>

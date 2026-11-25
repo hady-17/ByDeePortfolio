@@ -1,14 +1,21 @@
 ---
 import site from '../../site.config.mjs';
 import { makeT, localePath, type Lang } from '../i18n';
+import { makeP3 } from '../i18n/phase3';
+import { broadcastOptIn } from '../data/promotions';
 
 const { lang } = Astro.props as { lang: Lang };
 const t = makeT(lang);
+const q = makeP3(lang);
+const optInHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(q('optin.msg'))}`;
 const analyticsOn = Boolean(site.analytics.ga4Id || site.analytics.metaPixelId);
 ---
 <footer class="footer">
   <div class="container footer__inner">
     <ul class="footer__legal-nav" role="list">
+      <li><a href={localePath(lang, '/skin-quiz/')}>{q('quiz.nav')}</a></li>
+      <li><a href={localePath(lang, '/journal/')}>{q('journal.nav')}</a></li>
+      {broadcastOptIn && <li><a href={optInHref} target="_blank" rel="noopener">{q('optin.link')}</a></li>}
       <li><a href={localePath(lang, '/privacy/')}>{t('legal.privacy')}</a></li>
       <li><a href={localePath(lang, '/terms/')}>{t('legal.terms')}</a></li>
       <li><a href={localePath(lang, '/medical-disclaimer/')}>{t('legal.disclaimer')}</a></li>

@@ -2,6 +2,9 @@
 import Pic from './Pic.astro';
 import site from '../../site.config.mjs';
 import Faq from './Faq.astro';
+import Promotions from './Promotions.astro';
+import { makeP3 } from '../i18n/phase3';
+import { referral, broadcastOptIn } from '../data/promotions';
 import Results from './Results.astro';
 import Reviews from './Reviews.astro';
 import { results } from '../data/results';
@@ -19,7 +22,9 @@ const hasResults = results.some((r) => r.consent);
 const hasReviews = reviews.length > 0;
 const u = ui[lang];
 const tpath = (slug: string) => localePath(lang, `/treatments/${slug}/`);
-const money = (n: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-LB' : 'en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+const money = (n: number) => `$${n.toLocaleString('en-US')}`;
+const q = makeP3(lang);
+const optInHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(q('optin.msg'))}`;
 const waUrl = `https://wa.me/${site.whatsapp}`;
 ---
 
@@ -60,6 +65,7 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
           <li><a class="nav__link" href="#treatments">{t("nav.treatments")}</a></li>
           <li hidden={!hasResults}><a class="nav__link" href="#results">{t("nav.results")}</a></li>
           <li hidden={!hasReviews}><a class="nav__link" href="#reviews">{t("nav.reviews")}</a></li>
+          <li><a class="nav__link" href={localePath(lang, "/journal/")}>{q("journal.nav")}</a></li>
           <li><a class="nav__link" href="#faq">{t("nav.faq")}</a></li>
           <li><a class="nav__link" href="#contact">{t("nav.contact")}</a></li>
         </ul>
@@ -182,7 +188,10 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
             <p class="eyebrow reveal">{t("treat.eyebrow")}</p>
             <h2 class="h2 reveal" id="treat-title">{t("treat.title")}</h2>
           </div>
-          <p class="section__lead reveal">{t("treat.lead")}</p>
+          <div>
+            <p class="section__lead reveal">{t("treat.lead")}</p>
+            <p class="quiz-cta reveal"><a class="link-arrow" href={localePath(lang, "/skin-quiz/")}><span>{q("quiz.cta")}</span><svg class="icon icon--flip" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+          </div>
         </header>
 
         <ul class="treatments__grid" role="list">
@@ -293,6 +302,8 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
          ========================================================= -->
     <Reviews lang={lang} />
 
+    <Promotions lang={lang} />
+
     <Faq lang={lang} />
 
     <!-- =========================================================
@@ -313,6 +324,7 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
             <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>{t("booking.f1")}</span></li>
             <li><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>{t("booking.f2")}</span></li>
           </ul>
+          {referral.enabled && referral.text[lang] && <p class="referral reveal"><strong>{q("referral.title")}</strong> {referral.text[lang]}</p>}
         </div>
 
         <!-- Netlify Forms ready: set CONFIG.formMode = 'netlify' in js/main.js once deployed on Netlify -->
@@ -417,7 +429,10 @@ const waUrl = `https://wa.me/${site.whatsapp}`;
           <li><a href="#treatments">{t("nav.treatments")}</a></li>
           <li hidden={!hasResults}><a href="#results">{t("nav.results")}</a></li>
           <li><a href="#booking">{t("cta.book")}</a></li>
+          <li><a href={localePath(lang, "/skin-quiz/")}>{q("quiz.nav")}</a></li>
+          <li><a href={localePath(lang, "/journal/")}>{q("journal.nav")}</a></li>
           <li><a href="#contact">{t("nav.contact")}</a></li>
+          {broadcastOptIn && <li><a href={optInHref} target="_blank" rel="noopener">{q("optin.link")}</a></li>}
         </ul>
       </nav>
       <ul class="footer__legal-nav" role="list"><li><a href={`${prefix}/privacy/`}>{t("legal.privacy")}</a></li><li><a href={`${prefix}/terms/`}>{t("legal.terms")}</a></li><li><a href={`${prefix}/medical-disclaimer/`}>{t("legal.disclaimer")}</a></li></ul>

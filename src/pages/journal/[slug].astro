@@ -1,0 +1,9 @@
+---
+import JournalPost from '../../layouts/JournalPost.astro';
+import { postsFor, slugOf } from '../../i18n/journal';
+export async function getStaticPaths() {
+  return (await postsFor('en')).map((post) => ({ params: { slug: slugOf(post) }, props: { post } }));
+}
+const { post } = Astro.props;
+---
+<JournalPost lang="en" post={post} />

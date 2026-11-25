@@ -24,20 +24,25 @@ Address: **https://bydee961.vercel.app/admin/** (it is not linked from the site 
 
 When the token expires, create a new one the same way.
 
-Optional: a **Sign In with GitHub** button (no token) needs a small free sign-in service. See https://github.com/sveltia/sveltia-cms-auth for the setup, then add its address as `base_url` under `backend` in `public/admin/config.yml`.
+Optional: a **Sign In with GitHub** button (no token) needs a small free sign-in service. See https://github.com/sveltia/sveltia-cms-auth for the setup. Then, in `public/admin/config.yml` under `backend`, add its address as `base_url` and change `auth_methods` to `[oauth, token]`. Without that service the button does not work, which is why it is switched off.
 
-## What you can edit
+## Inside the admin
+
+The **Help** button (question mark) in the top toolbar opens a short guide in English and Arabic. The admin itself can also be switched to Arabic from the account menu, then Settings.
 
 | Section | What it changes |
 | --- | --- |
-| Offers & promotions | Offers on the home page (they hide themselves after their end date), gift card amounts, the refer-a-friend note, the WhatsApp offers link |
-| Prices & packages | "From $X" on treatment cards and pages, packages on treatment pages |
-| Photos | Any photo on the site. Leave a slot empty to keep the current one |
+| Offers | Offers on the home page (each one hides itself after its last day), and the "Get offers on WhatsApp" link |
+| Gift cards | Gift card amounts. Clients order on WhatsApp |
+| Refer a friend | The refer-a-friend message in the booking section |
+| Prices | "From $X" on treatment cards and pages, and packages on treatment pages |
+| Website photos | Any photo on the site. Leave a slot empty to keep the current one |
 | Before & after | Cases in the Results section. Only with the client's written consent |
 | Reviews | The reviews carousel. Only reviews the client agreed to share, word for word |
 | FAQ | Questions and answers on the home page |
-| Journal | Articles in English and Arabic. Switch "Hide (draft)" on to keep one off the site |
-| Settings | Phone, WhatsApp, email, links, booking link, map pin, analytics IDs |
+| Contact details | WhatsApp, phone, email, Instagram, online booking link, Google review link |
+| Advanced settings | Website address, clinic name, Google Business link, map location, visitor statistics IDs, legal pages date |
+| Journal | Articles in English and Arabic. Switch "Hide this article" on to keep one off the site |
 
 Sections with nothing in them stay hidden on the site, so it is safe to leave anything empty.
 
@@ -49,7 +54,7 @@ Sections with nothing in them stay hidden on the site, so it is safe to leave an
 
 ## For the developer
 
-- Configuration: `public/admin/config.yml`. Page: `src/pages/admin/index.astro` (Sveltia CMS from npm).
+- Configuration: `public/admin/config.yml`. Page: `src/pages/admin/index.astro` (Sveltia CMS from npm). Help page: `src/pages/admin/help.astro`.
 - Editable data: `src/cms/*.json` and `src/content/journal/<en|ar>/*.md`. Uploaded photos: `src/assets/uploads/`.
 - The admin saves straight to the `main` branch, so this setup only works once it is merged into `main`.
 - To test locally without GitHub, run `npm run dev`, open http://localhost:4321/admin/ in Chrome or Edge and choose **Work with Local Repository**, then select this project folder.

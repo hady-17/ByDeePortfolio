@@ -18,16 +18,15 @@ npm run preview   # serve dist/ locally
 ## Structure
 
 ```
-site.config.mjs        # reads src/cms/settings.json (domain, phone, WhatsApp, analytics, links)
-src/cms/*.json         # owner-editable data: settings, photos, offers, prices, reviews, results, FAQ
+site.config.mjs        # reads src/cms/contact.json and advanced.json
+src/cms/*.json         # owner-editable data: contact, advanced, photos, offers, gift cards, referral, prices, reviews, results, FAQ
 public/admin/config.yml   # admin area (/admin/) configuration, see ADMIN.md
 src/pages/             # / and /ar/ (home), /treatments/<slug>/, /skin-quiz/, /journal/, legal pages (+ /ar/ copies)
 src/components/Home.astro   # the home page markup (used for both languages)
 src/i18n/en.json, ar.json   # all page text, one key per string
 src/i18n/legal.ts           # legal page text (DRAFT, have a lawyer review)
 src/i18n/treatments.ts      # treatment page content, general FAQ (DRAFT, Deena to review)
-src/data/                   # prices.ts, results.ts, reviews.ts: empty until filled in
-src/data/promotions.ts      # offers, gift cards, referral, WhatsApp opt-in: off until filled in
+src/data/                   # read the src/cms files for the pages (prices, results, reviews, promotions)
 src/content/journal/en|ar/  # journal articles (Markdown), same file name in both folders
 src/scripts/quiz.js         # skin quiz logic (runs in the browser, sends nothing)
 src/layouts/           # Base (SEO, hreflang, structured data), Legal
@@ -46,18 +45,18 @@ Put photos in `src/assets/` with these names (any of jpg, jpeg, png, webp, avif)
 
 ## Going live checklist
 
-- **Custom domain:** change `url` in `site.config.mjs`, then add the domain in Vercel.
-- **Analytics:** set `analytics.ga4Id` and/or `analytics.metaPixelId`. Nothing loads, and no cookie banner shows, while both are empty. When set, tracking loads only after the visitor accepts.
-- **Google Business Profile:** set `googleBusinessUrl` and `googleReviewUrl`, and keep the name, address and phone identical to the profile.
-- **Address and map pin:** add the full address and `geo` coordinates.
-- **Email:** set `email` to show it on legal pages and in structured data.
+- **Custom domain:** add the domain in Vercel, then change the website address in the admin under Advanced settings.
+- **Analytics:** in the admin, Advanced settings, add a Google Analytics or Meta Pixel ID. Nothing loads, and no cookie banner shows, while both are empty. When set, tracking loads only after the visitor accepts.
+- **Google Business Profile:** in the admin, add the profile link (Advanced settings) and the review link (Contact details). Keep the name, address and phone identical to the profile.
+- **Address and map pin:** add the map location in the admin (Advanced settings). The street address is still in the code (`Base.astro` and `en.json`/`ar.json`).
+- **Email:** add it in the admin (Contact details) to show it on legal pages and in structured data.
 - **Legal pages:** have a Lebanese lawyer review `src/i18n/legal.ts`.
-- **Prices and packages:** fill `src/data/prices.ts`. Prices show on the treatment cards and pages only once added.
-- **Reviews:** add real, agreed reviews to `src/data/reviews.ts`. The section and its nav link appear automatically.
-- **Before/after cases:** add photo pairs to `src/assets/` and a consented entry in `src/data/results.ts`. The section, filter buttons and nav link appear automatically.
-- **Online booking:** set `bookingUrl` in `site.config.mjs` (Fresha, Setmore, Cal.com...). A "Book online" button then appears.
+- **Prices and packages:** add them in the admin (Prices). They show on the treatment cards and pages only once added.
+- **Reviews:** add real, agreed reviews in the admin (Reviews). The section and its nav link appear automatically.
+- **Before/after cases:** add photo pairs with consent in the admin (Before & after). The section, filter buttons and nav link appear automatically.
+- **Online booking:** add the booking link in the admin under Contact details (Fresha, Setmore, Cal.com...). A "Book online" button then appears.
 - **Treatment and FAQ text:** have Deena check `src/i18n/treatments.ts` (sessions, downtime, who should avoid, aftercare) so it matches her practice.
-- **Offers, gift cards, referral, WhatsApp opt-in:** fill in `src/data/promotions.ts`. Each part appears only once filled in or switched on. Offers disappear after their end date at the next build.
+- **Offers, gift cards, referral, WhatsApp opt-in:** fill them in through the admin. Each part appears only once filled in or switched on. Offers disappear after their end date at the next build.
 - **Journal:** add a Markdown file to `src/content/journal/en/` and the same file name to `src/content/journal/ar/`. Set `draft: true` to hide one. Have Deena review articles before publishing.
 - **"Why us" counters:** still hidden with a `hidden` attribute in `Home.astro` until real figures are confirmed.
 - **Booking:** the form opens WhatsApp with the details. No data is stored on the site.

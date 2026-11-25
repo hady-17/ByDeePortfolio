@@ -7,6 +7,6 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory' },
   integrations: [
-    sitemap({ i18n: { defaultLocale: 'en', locales: { en: 'en', ar: 'ar' } } })
+    sitemap({ filter: (page) => !page.includes('/admin/'), i18n: { defaultLocale: 'en', locales: { en: 'en', ar: 'ar' } } })
   ]
 });

@@ -1,0 +1,21 @@
+{
+  "url": "https://bydee961.vercel.app",
+  "name": "ByDee",
+  "whatsapp": "96181126500",
+  "phone": "+96181126500",
+  "phoneDisplay": "+961 81 126 500",
+  "instagram": "https://instagram.com/bydee961",
+  "email": "",
+  "bookingUrl": "",
+  "googleBusinessUrl": "",
+  "googleReviewUrl": "",
+  "geo": {
+    "lat": null,
+    "lng": null
+  },
+  "analytics": {
+    "ga4Id": "",
+    "metaPixelId": ""
+  },
+  "lastUpdated": "2026-11-24"
+}

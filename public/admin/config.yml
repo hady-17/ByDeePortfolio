@@ -1,0 +1,309 @@
+# Admin area configuration (Sveltia CMS). See ADMIN.md for how the clinic owner signs in.
+# Every save is a commit to the main branch; Vercel then rebuilds the site (about a minute).
+
+backend:
+  name: github
+  repo: hady-17/ByDeePortfolio
+  branch: main
+  commit_messages:
+    create: "Admin: add {{collection}} \"{{slug}}\""
+    update: "Admin: update {{collection}} \"{{slug}}\""
+    delete: "Admin: delete {{collection}} \"{{slug}}\""
+    uploadMedia: "Admin: upload {{path}}"
+    deleteMedia: "Admin: delete {{path}}"
+
+site_url: https://bydee961.vercel.app
+display_url: https://bydee961.vercel.app
+
+# Uploaded photos are stored in the repo and optimised at build time.
+media_folder: src/assets/uploads
+public_folder: /src/assets/uploads
+
+i18n:
+  structure: multiple_folders
+  locales: [en, ar]
+  default_locale: en
+
+collections:
+  # ---------------------------------------------------------------- Offers & promotions
+  - name: promotions
+    label: Offers & promotions
+    icon: sell
+    files:
+      - name: promotions
+        label: Offers, gift cards, referral
+        file: src/cms/promotions.json
+        fields:
+          - name: offers
+            label: Offers
+            label_singular: Offer
+            hint: Shown on the home page. An offer disappears automatically after its end date.
+            widget: list
+            required: false
+            summary: "{{fields.title.en}}"
+            fields:
+              - name: title
+                label: Title
+                widget: object
+                fields:
+                  - { name: en, label: English, widget: string }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+              - name: text
+                label: Description
+                widget: object
+                fields:
+                  - { name: en, label: English, widget: text }
+                  - { name: ar, label: Arabic, widget: text, required: false }
+              - name: treatment
+                label: Related treatment
+                hint: The offer's Book button preselects this treatment.
+                widget: select
+                required: false
+                options: &treatments
+                  - { label: Signature Facial, value: signature-facial }
+                  - { label: Skin Rejuvenation, value: skin-rejuvenation }
+                  - { label: Laser Resurfacing, value: laser-resurfacing }
+                  - { label: Quadro Laser (hair removal), value: laser-hair-removal }
+                  - { label: Anti-Wrinkle, value: anti-wrinkle }
+              - name: until
+                label: Last day of the offer
+                widget: datetime
+                required: false
+                time_format: false
+                format: YYYY-MM-DD
+          - name: giftCards
+            label: Gift cards
+            widget: object
+            hint: Clients order gift cards on WhatsApp. Leave the amounts empty to hide the section.
+            fields:
+              - name: amounts
+                label: Amounts (US dollars)
+                widget: list
+                required: false
+                field: { name: amount, label: Amount, widget: number, value_type: int, min: 1 }
+              - name: note
+                label: Extra line (optional)
+                widget: object
+                required: false
+                fields:
+                  - { name: en, label: English, widget: string, required: false }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+          - name: referral
+            label: Refer a friend
+            widget: object
+            fields:
+              - { name: enabled, label: Show in the booking section, widget: boolean, default: false }
+              - name: text
+                label: Reward description
+                widget: object
+                required: false
+                fields:
+                  - { name: en, label: English, widget: string, required: false }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+          - name: broadcastOptIn
+            label: Show "Get offers on WhatsApp" link in the footer
+            hint: Only switch on if you send a WhatsApp broadcast list.
+            widget: boolean
+            default: false
+
+  # ---------------------------------------------------------------- Prices
+  - name: prices
+    label: Prices & packages
+    icon: payments
+    files:
+      - name: prices
+        label: Prices & packages
+        file: src/cms/prices.json
+        fields:
+          - name: prices
+            label: Starting prices
+            label_singular: Price
+            hint: Shown as "From $X" on the treatment cards and pages. One row per treatment.
+            widget: list
+            required: false
+            summary: "{{fields.treatment}}: ${{fields.from}}"
+            fields:
+              - { name: treatment, label: Treatment, widget: select, options: *treatments }
+              - { name: from, label: From (US dollars), widget: number, value_type: int, min: 1 }
+              - name: note
+                label: Note (optional, e.g. "per session")
+                widget: object
+                required: false
+                fields:
+                  - { name: en, label: English, widget: string, required: false }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+          - name: packages
+            label: Packages
+            label_singular: Package
+            hint: Shown on the treatment page.
+            widget: list
+            required: false
+            summary: "{{fields.name.en}}"
+            fields:
+              - { name: treatment, label: Treatment, widget: select, options: *treatments }
+              - name: name
+                label: Package name
+                widget: object
+                fields:
+                  - { name: en, label: English, widget: string }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+              - { name: price, label: Price (US dollars), widget: number, value_type: int, min: 1 }
+              - name: includes
+                label: What it includes
+                widget: object
+                fields:
+                  - { name: en, label: English, widget: string, required: false }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+
+  # ---------------------------------------------------------------- Photos
+  - name: photos
+    label: Photos
+    icon: photo_library
+    files:
+      - name: images
+        label: Website photos
+        file: src/cms/images.json
+        fields:
+          - { name: home-hero, label: Home page main photo, widget: image, required: false, hint: 'Replace any photo on the site. Leave a slot empty to keep the current photo.' }
+          - { name: deena-profile, label: Deena's portrait (About section), widget: image, required: false }
+          - { name: signature-facial, label: Signature Facial, widget: image, required: false }
+          - { name: skin-rejuvenation, label: Skin Rejuvenation, widget: image, required: false }
+          - { name: laser-resurfacing, label: Laser Resurfacing, widget: image, required: false }
+          - { name: quadro-laser, label: Quadro Laser, widget: image, required: false }
+          - { name: anti-wrinkle, label: Anti-Wrinkle, widget: image, required: false }
+
+  # ---------------------------------------------------------------- Before / after
+  - name: results
+    label: Before & after
+    icon: compare
+    files:
+      - name: results
+        label: Before & after cases
+        file: src/cms/results.json
+        fields:
+          - name: results
+            label: Cases
+            label_singular: Case
+            hint: Only add photos the client agreed in writing to publish.
+            widget: list
+            required: false
+            summary: "{{fields.treatment}} ({{fields.sessions}} sessions)"
+            fields:
+              - { name: treatment, label: Treatment, widget: select, options: *treatments }
+              - { name: before, label: Before photo, widget: image }
+              - { name: after, label: After photo, widget: image }
+              - { name: sessions, label: Number of sessions, widget: number, value_type: int, min: 1, default: 1 }
+              - name: caption
+                label: Caption
+                widget: object
+                fields:
+                  - { name: en, label: English, widget: string }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+              - { name: consent, label: The client gave written consent to publish these photos, widget: boolean, default: false }
+
+  # ---------------------------------------------------------------- Reviews
+  - name: reviews
+    label: Reviews
+    icon: reviews
+    files:
+      - name: reviews
+        label: Client reviews
+        file: src/cms/reviews.json
+        fields:
+          - name: reviews
+            label: Reviews
+            label_singular: Review
+            hint: Only publish reviews the client agreed to share, word for word.
+            widget: list
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { name: name, label: 'Client name as they agreed, e.g. "Rima H."', widget: string }
+              - { name: treatment, label: Treatment, widget: select, options: *treatments }
+              - { name: lang, label: Language of the review, widget: select, default: en, options: [{ label: English, value: en }, { label: Arabic, value: ar }] }
+              - { name: text, label: Review, widget: text }
+
+  # ---------------------------------------------------------------- FAQ
+  - name: faq
+    label: FAQ
+    icon: help
+    files:
+      - name: faq
+        label: Frequently asked questions
+        file: src/cms/faq.json
+        fields:
+          - name: items
+            label: Questions
+            label_singular: Question
+            widget: list
+            summary: "{{fields.q.en}}"
+            fields:
+              - name: q
+                label: Question
+                widget: object
+                fields:
+                  - { name: en, label: English, widget: string }
+                  - { name: ar, label: Arabic, widget: string, required: false }
+              - name: a
+                label: Answer
+                widget: object
+                fields:
+                  - { name: en, label: English, widget: text }
+                  - { name: ar, label: Arabic, widget: text, required: false }
+
+  # ---------------------------------------------------------------- Journal
+  - name: journal
+    label: Journal
+    label_singular: Article
+    icon: article
+    folder: src/content/journal
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    i18n: true
+    summary: "{{title}}"
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: Title, widget: string, i18n: true }
+      - { name: description, label: Short description, widget: text, i18n: true }
+      - { name: date, label: Date, widget: datetime, time_format: false, format: YYYY-MM-DD, i18n: duplicate }
+      - { name: treatment, label: Related treatment, widget: select, required: false, options: *treatments, i18n: duplicate }
+      - { name: draft, label: Hide (draft), widget: boolean, default: false, required: false, i18n: duplicate }
+      - { name: body, label: Article, widget: markdown, i18n: true }
+
+  # ---------------------------------------------------------------- Settings
+  - name: settings
+    label: Settings
+    icon: settings
+    files:
+      - name: settings
+        label: Contact, links & tracking
+        file: src/cms/settings.json
+        fields:
+          - { name: url, label: Website address, widget: string, hint: Change only when the custom domain is live. }
+          - { name: name, label: Clinic name, widget: string }
+          - { name: whatsapp, label: 'WhatsApp number (digits only, with country code)', widget: string, pattern: ['^[0-9]{8,15}$', 'Digits only, e.g. 96181126500'] }
+          - { name: phone, label: 'Phone for calling, e.g. +96181126500', widget: string }
+          - { name: phoneDisplay, label: Phone as shown on the site, widget: string }
+          - { name: instagram, label: Instagram link, widget: string, required: false }
+          - { name: email, label: Email, widget: string, required: false }
+          - { name: bookingUrl, label: 'Online booking link (Fresha, Setmore...)', widget: string, required: false }
+          - { name: googleBusinessUrl, label: Google Business Profile link, widget: string, required: false }
+          - { name: googleReviewUrl, label: Google "write a review" link, widget: string, required: false }
+          - name: geo
+            label: Map pin
+            widget: object
+            required: false
+            fields:
+              - { name: lat, label: Latitude, widget: number, value_type: float, required: false }
+              - { name: lng, label: Longitude, widget: number, value_type: float, required: false }
+          - name: analytics
+            label: Analytics (cookie banner appears when set)
+            widget: object
+            required: false
+            fields:
+              - { name: ga4Id, label: Google Analytics ID (G-...), widget: string, required: false }
+              - { name: metaPixelId, label: Meta Pixel ID, widget: string, required: false }
+          - { name: lastUpdated, label: Legal pages last updated, widget: datetime, time_format: false, format: YYYY-MM-DD }

@@ -1,28 +1,26 @@
-// Single place to edit site-wide settings. Used by astro.config.mjs and the pages.
+// Site-wide settings. The values live in src/cms/settings.json so the clinic owner can edit them
+// in the admin area (/admin/). Used by astro.config.mjs and the pages.
+import data from './src/cms/settings.json' with { type: 'json' };
+
+const clean = (v) => (typeof v === 'string' ? v.trim() : v ?? '');
+const lat = Number(data.geo?.lat);
+const lng = Number(data.geo?.lng);
+
 export default {
-  // Change this one line when the custom domain is live (e.g. 'https://bydee.com').
-  url: 'https://bydee961.vercel.app',
-  name: 'ByDee',
-  whatsapp: '96181126500', // international format, digits only
-  phone: '+96181126500',
-  phoneDisplay: '+961 81 126 500',
-  instagram: 'https://instagram.com/bydee961',
-  email: '', // add a contact email; it is then shown on the legal pages and in structured data
-
-  // Optional online booking page (Fresha, Setmore, Cal.com...). When set, "Book" buttons on the
-  // treatment pages and the booking section offer it alongside the form and WhatsApp.
-  bookingUrl: '',
-
-  // Google Business Profile. Fill these in once the profile is verified.
-  googleBusinessUrl: '', // e.g. https://g.page/...  (added to structured data sameAs)
-  googleReviewUrl: '',   // "Write a review" link; the Reviews link appears when set
-  geo: null,             // e.g. { lat: 33.88, lng: 35.52 } once the exact pin is known
-
-  // Analytics. Leave empty to load nothing and show no cookie banner.
+  url: clean(data.url).replace(/\/+$/, '') || 'https://bydee961.vercel.app',
+  name: clean(data.name) || 'ByDee',
+  whatsapp: clean(data.whatsapp).replace(/\D/g, ''), // international format, digits only
+  phone: clean(data.phone),
+  phoneDisplay: clean(data.phoneDisplay),
+  instagram: clean(data.instagram),
+  email: clean(data.email),
+  bookingUrl: clean(data.bookingUrl),
+  googleBusinessUrl: clean(data.googleBusinessUrl),
+  googleReviewUrl: clean(data.googleReviewUrl),
+  geo: data.geo?.lat != null && data.geo?.lng != null && Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null,
   analytics: {
-    ga4Id: '',       // e.g. 'G-XXXXXXXXXX'
-    metaPixelId: ''  // e.g. '1234567890'
+    ga4Id: clean(data.analytics?.ga4Id),
+    metaPixelId: clean(data.analytics?.metaPixelId)
   },
-
-  lastUpdated: '2026-11-24' // legal pages
+  lastUpdated: clean(data.lastUpdated) || '2026-11-24'
 };

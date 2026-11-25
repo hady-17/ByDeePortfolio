@@ -1,4 +1,5 @@
 import type { Lang } from './index';
+import faqData from '../cms/faq.json';
 
 export interface Faq { q: string; a: string }
 export interface TreatmentCopy {
@@ -199,29 +200,12 @@ export const treatments: Treatment[] = [
   }
 ];
 
+// General FAQ (home page). Edited in the admin area (/admin/), stored in src/cms/faq.json.
+const faqItems = (faqData.items ?? []) as { q: { en: string; ar: string }; a: { en: string; ar: string } }[];
+const usable = faqItems.filter((f) => f.q?.en && f.a?.en);
 export const generalFaq: Record<Lang, Faq[]> = {
-  en: [
-    { q: 'What happens at the first consultation?', a: 'We talk about your goals and your skin, assess it and agree a plan with you before any treatment begins. It is unhurried.' },
-    { q: 'Who performs the treatments?', a: 'Deena Kaddoura, a registered nurse and professional certified derma.' },
-    { q: 'Will the results look natural?', a: 'That is our aim. We recommend less when less is better, and we say no when a treatment is not right for you.' },
-    { q: 'Do treatments hurt?', a: 'Comfort varies by treatment and by person. We explain what to expect first and adjust to keep you comfortable.' },
-    { q: 'Can I have treatments if I am pregnant or breastfeeding?', a: 'Most aesthetic treatments are postponed during pregnancy and breastfeeding. Please tell us, and we will advise you.' },
-    { q: 'Are treatments suitable for my skin tone?', a: 'We choose and adjust each treatment to your skin type and tone at the consultation.' },
-    { q: 'How many sessions will I need?', a: 'It depends on the treatment and on you. Each treatment page gives a general idea, and we confirm your plan at the consultation.' },
-    { q: 'How do I book, and can I reschedule?', a: 'Book through the form, on WhatsApp or by phone. We confirm your appointment with you. You can reschedule free of charge up to 24 hours before.' },
-    { q: 'Where are you and when are you open?', a: 'We are in Barbir, Beirut. Monday to Friday 09:00 to 19:00, Saturday 10:00 to 16:00, closed on Sunday.' }
-  ],
-  ar: [
-    { q: 'ماذا يحدث في الاستشارة الأولى؟', a: 'نتحدث عن أهدافك وبشرتك ونقيّمها ونتفق معك على خطة قبل بدء أي علاج. دون أي استعجال.' },
-    { q: 'من يجري العلاجات؟', a: 'دينا قدورة، ممرضة مجازة ومختصة معتمدة في العناية الجلدية.' },
-    { q: 'هل ستبدو النتائج طبيعية؟', a: 'هذا هدفنا. ننصح بالأقل عندما يكون الأقل أفضل، ونقول لا عندما لا يناسبك العلاج.' },
-    { q: 'هل العلاجات مؤلمة؟', a: 'تختلف الراحة بحسب العلاج والشخص. نشرح لك ما تتوقعينه أولاً ونضبط العلاج لراحتك.' },
-    { q: 'هل يمكنني إجراء العلاجات إن كنت حاملاً أو مرضعاً؟', a: 'تؤجَّل معظم العلاجات التجميلية خلال الحمل والرضاعة. يرجى إخبارنا وسننصحك.' },
-    { q: 'هل العلاجات مناسبة للون بشرتي؟', a: 'نختار كل علاج ونضبطه وفق نوع بشرتك ولونها في الاستشارة.' },
-    { q: 'كم جلسة سأحتاج؟', a: 'يعتمد ذلك على العلاج وعليك. تعطي صفحة كل علاج فكرة عامة، ونؤكد خطتك في الاستشارة.' },
-    { q: 'كيف أحجز، وهل يمكنني تغيير الموعد؟', a: 'احجزي عبر النموذج أو واتساب أو الهاتف. نؤكد لك موعدك. يمكنك تغييره مجاناً حتى 24 ساعة قبله.' },
-    { q: 'أين مكانكم ومتى تفتحون؟', a: 'نحن في بربير، بيروت. من الاثنين إلى الجمعة 09:00 إلى 19:00، والسبت 10:00 إلى 16:00، ومغلق الأحد.' }
-  ]
+  en: usable.map((f) => ({ q: f.q.en, a: f.a.en })),
+  ar: usable.map((f) => ({ q: f.q.ar || f.q.en, a: f.a.ar || f.a.en }))
 };
 
 export const ui: Record<Lang, Record<string, string>> = {

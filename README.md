@@ -2,6 +2,10 @@
 
 Bilingual (English / Arabic, RTL) website for ByDee, a clinic in Barbir, Beirut, Lebanon, run by Deena Kaddoura, RN. Built with [Astro](https://astro.build) and outputs plain static HTML, CSS and a small amount of JavaScript.
 
+## Admin area
+
+The clinic owner edits photos, offers, prices, reviews, results, FAQ, journal and settings at `/admin/`. See [ADMIN.md](ADMIN.md) for sign-in setup.
+
 ## Commands
 
 ```
@@ -14,7 +18,9 @@ npm run preview   # serve dist/ locally
 ## Structure
 
 ```
-site.config.mjs        # domain, phone, WhatsApp, analytics IDs, Google Business links
+site.config.mjs        # reads src/cms/settings.json (domain, phone, WhatsApp, analytics, links)
+src/cms/*.json         # owner-editable data: settings, photos, offers, prices, reviews, results, FAQ
+public/admin/config.yml   # admin area (/admin/) configuration, see ADMIN.md
 src/pages/             # / and /ar/ (home), /treatments/<slug>/, /skin-quiz/, /journal/, legal pages (+ /ar/ copies)
 src/components/Home.astro   # the home page markup (used for both languages)
 src/i18n/en.json, ar.json   # all page text, one key per string

@@ -1,0 +1,94 @@
+{
+  "items": [
+    {
+      "q": {
+        "en": "What happens at the first consultation?",
+        "ar": "ماذا يحدث في الاستشارة الأولى؟"
+      },
+      "a": {
+        "en": "We talk about your goals and your skin, assess it and agree a plan with you before any treatment begins. It is unhurried.",
+        "ar": "نتحدث عن أهدافك وبشرتك ونقيّمها ونتفق معك على خطة قبل بدء أي علاج. دون أي استعجال."
+      }
+    },
+    {
+      "q": {
+        "en": "Who performs the treatments?",
+        "ar": "من يجري العلاجات؟"
+      },
+      "a": {
+        "en": "Deena Kaddoura, a registered nurse and professional certified derma.",
+        "ar": "دينا قدورة، ممرضة مجازة ومختصة معتمدة في العناية الجلدية."
+      }
+    },
+    {
+      "q": {
+        "en": "Will the results look natural?",
+        "ar": "هل ستبدو النتائج طبيعية؟"
+      },
+      "a": {
+        "en": "That is our aim. We recommend less when less is better, and we say no when a treatment is not right for you.",
+        "ar": "هذا هدفنا. ننصح بالأقل عندما يكون الأقل أفضل، ونقول لا عندما لا يناسبك العلاج."
+      }
+    },
+    {
+      "q": {
+        "en": "Do treatments hurt?",
+        "ar": "هل العلاجات مؤلمة؟"
+      },
+      "a": {
+        "en": "Comfort varies by treatment and by person. We explain what to expect first and adjust to keep you comfortable.",
+        "ar": "تختلف الراحة بحسب العلاج والشخص. نشرح لك ما تتوقعينه أولاً ونضبط العلاج لراحتك."
+      }
+    },
+    {
+      "q": {
+        "en": "Can I have treatments if I am pregnant or breastfeeding?",
+        "ar": "هل يمكنني إجراء العلاجات إن كنت حاملاً أو مرضعاً؟"
+      },
+      "a": {
+        "en": "Most aesthetic treatments are postponed during pregnancy and breastfeeding. Please tell us, and we will advise you.",
+        "ar": "تؤجَّل معظم العلاجات التجميلية خلال الحمل والرضاعة. يرجى إخبارنا وسننصحك."
+      }
+    },
+    {
+      "q": {
+        "en": "Are treatments suitable for my skin tone?",
+        "ar": "هل العلاجات مناسبة للون بشرتي؟"
+      },
+      "a": {
+        "en": "We choose and adjust each treatment to your skin type and tone at the consultation.",
+        "ar": "نختار كل علاج ونضبطه وفق نوع بشرتك ولونها في الاستشارة."
+      }
+    },
+    {
+      "q": {
+        "en": "How many sessions will I need?",
+        "ar": "كم جلسة سأحتاج؟"
+      },
+      "a": {
+        "en": "It depends on the treatment and on you. Each treatment page gives a general idea, and we confirm your plan at the consultation.",
+        "ar": "يعتمد ذلك على العلاج وعليك. تعطي صفحة كل علاج فكرة عامة، ونؤكد خطتك في الاستشارة."
+      }
+    },
+    {
+      "q": {
+        "en": "How do I book, and can I reschedule?",
+        "ar": "كيف أحجز، وهل يمكنني تغيير الموعد؟"
+      },
+      "a": {
+        "en": "Book through the form, on WhatsApp or by phone. We confirm your appointment with you. You can reschedule free of charge up to 24 hours before.",
+        "ar": "احجزي عبر النموذج أو واتساب أو الهاتف. نؤكد لك موعدك. يمكنك تغييره مجاناً حتى 24 ساعة قبله."
+      }
+    },
+    {
+      "q": {
+        "en": "Where are you and when are you open?",
+        "ar": "أين مكانكم ومتى تفتحون؟"
+      },
+      "a": {
+        "en": "We are in Barbir, Beirut. Monday to Friday 09:00 to 19:00, Saturday 10:00 to 16:00, closed on Sunday.",
+        "ar": "نحن في بربير، بيروت. من الاثنين إلى الجمعة 09:00 إلى 19:00، والسبت 10:00 إلى 16:00، ومغلق الأحد."
+      }
+    }
+  ]
+}

@@ -46,7 +46,7 @@ Put photos in `src/assets/` with these names (any of jpg, jpeg, png, webp, avif)
 
 ## Going live checklist
 
-- **Custom domain:** change `url` in `site.config.mjs`, then add the domain in Vercel.
+- **Custom domain:** add the domain in Vercel, then change the website address in the admin under Advanced settings.
 - **Analytics:** set `analytics.ga4Id` and/or `analytics.metaPixelId`. Nothing loads, and no cookie banner shows, while both are empty. When set, tracking loads only after the visitor accepts.
 - **Google Business Profile:** set `googleBusinessUrl` and `googleReviewUrl`, and keep the name, address and phone identical to the profile.
 - **Address and map pin:** add the full address and `geo` coordinates.
@@ -55,7 +55,7 @@ Put photos in `src/assets/` with these names (any of jpg, jpeg, png, webp, avif)
 - **Prices and packages:** fill `src/data/prices.ts`. Prices show on the treatment cards and pages only once added.
 - **Reviews:** add real, agreed reviews to `src/data/reviews.ts`. The section and its nav link appear automatically.
 - **Before/after cases:** add photo pairs to `src/assets/` and a consented entry in `src/data/results.ts`. The section, filter buttons and nav link appear automatically.
-- **Online booking:** set `bookingUrl` in `site.config.mjs` (Fresha, Setmore, Cal.com...). A "Book online" button then appears.
+- **Online booking:** add the booking link in the admin under Contact details (Fresha, Setmore, Cal.com...). A "Book online" button then appears.
 - **Treatment and FAQ text:** have Deena check `src/i18n/treatments.ts` (sessions, downtime, who should avoid, aftercare) so it matches her practice.
 - **Offers, gift cards, referral, WhatsApp opt-in:** fill in `src/data/promotions.ts`. Each part appears only once filled in or switched on. Offers disappear after their end date at the next build.
 - **Journal:** add a Markdown file to `src/content/journal/en/` and the same file name to `src/content/journal/ar/`. Set `draft: true` to hide one. Have Deena review articles before publishing.
